@@ -214,7 +214,7 @@ function AccountsContent() {
       </div>
 
       {/* Net Worth Summary Card */}
-      <div className="card p-6 bg-[#ffffff] mb-8 relative border-l-4 border-l-[var(--color-primary)]">
+      <div className="card p-6 bg-[#ffffff] mb-8 relative border-l-4 border-l-[var(--color-primary)] animate-fade-in-up delay-75 hover:shadow-md transition-all duration-300">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="text-xs text-[var(--color-text-secondary)] uppercase tracking-wider font-semibold">
@@ -228,7 +228,7 @@ function AccountsContent() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1.5 rounded-lg bg-[rgba(24,122,186,0.08)] text-[var(--color-primary)] text-xs font-bold">
+            <span className="px-3 py-1.5 rounded-lg bg-[rgba(24,122,186,0.08)] text-[var(--color-primary)] text-xs font-bold transition-transform hover:scale-105">
               Presisi Integer IDR
             </span>
           </div>
@@ -237,7 +237,7 @@ function AccountsContent() {
 
       {/* Global Error Banner */}
       {error && (
-        <div className="p-4 bg-[rgba(198,34,52,0.08)] border border-[rgba(198,34,52,0.2)] rounded-lg text-xs text-[var(--color-accent-red)] flex items-center gap-2 mb-6">
+        <div className="p-4 bg-[rgba(198,34,52,0.08)] border border-[rgba(198,34,52,0.2)] rounded-lg text-xs text-[var(--color-accent-red)] flex items-center gap-2 mb-6 animate-shake">
           <AlertCircle size={16} />
           <span>{error}</span>
         </div>
@@ -251,8 +251,8 @@ function AccountsContent() {
           ))}
         </div>
       ) : accounts.length === 0 ? (
-        <div className="card p-12 text-center bg-[#ffffff]">
-          <Wallet size={36} className="mx-auto text-[var(--color-text-secondary)] mb-3 opacity-50" />
+        <div className="card p-12 text-center bg-[#ffffff] animate-fade-in-up">
+          <Wallet size={36} className="mx-auto text-[var(--color-text-secondary)] mb-3 opacity-50 animate-float" />
           <h3 className="font-bold text-base text-[var(--color-navy)]">Belum ada rekening</h3>
           <p className="text-xs text-[var(--color-text-secondary)] mt-1 mb-4">
             Tambahkan rekening pertama Anda untuk mulai mencatat transaksi.
@@ -267,8 +267,8 @@ function AccountsContent() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {accounts.map((acc) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in-up delay-150">
+          {accounts.map((acc, idx) => {
             const config = TYPE_CONFIG[acc.type] || TYPE_CONFIG.OTHER;
             const Icon = config.icon;
             const txCount = (acc._count?.outgoingTransactions || 0) + (acc._count?.incomingTransactions || 0);
@@ -276,20 +276,20 @@ function AccountsContent() {
             return (
               <div
                 key={acc.id}
-                className="card p-5 bg-[#ffffff] relative hover:shadow-[var(--shadow-high)] transition-all flex flex-col justify-between"
+                className="card p-5 bg-[#ffffff] relative hover:shadow-[var(--shadow-high)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
                 style={{ borderTop: `4px solid ${acc.color}` }}
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2.5">
                       <div
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-white"
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-transform group-hover:scale-110 duration-200"
                         style={{ backgroundColor: acc.color }}
                       >
                         <Icon size={18} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-sm text-[var(--color-navy)] leading-tight">
+                        <h3 className="font-bold text-sm text-[var(--color-navy)] leading-tight group-hover:text-[var(--color-primary)] transition-colors">
                           {acc.name}
                         </h3>
                         <span className="text-[11px] text-[var(--color-text-secondary)]">
@@ -298,11 +298,11 @@ function AccountsContent() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                       <button
                         type="button"
                         onClick={() => handleOpenEditModal(acc)}
-                        className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] rounded hover:bg-[#f0f0f0]"
+                        className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] rounded hover:bg-[#f0f0f0] transition-colors"
                         title="Edit Rekening"
                       >
                         <Edit2 size={13} />
@@ -310,7 +310,7 @@ function AccountsContent() {
                       <button
                         type="button"
                         onClick={() => handleDelete(acc)}
-                        className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-accent-red)] rounded hover:bg-[rgba(198,34,52,0.06)]"
+                        className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-accent-red)] rounded hover:bg-[rgba(198,34,52,0.06)] transition-colors"
                         title="Hapus Rekening"
                       >
                         <Trash2 size={13} />
@@ -338,8 +338,8 @@ function AccountsContent() {
 
       {/* Modal Add / Edit Account */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#ffffff] rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-high)] w-full max-w-md p-6">
+        <div className="fixed inset-0 bg-black/45 z-50 flex items-center justify-center p-4 backdrop-blur-md animate-fade-in duration-200">
+          <div className="bg-[#ffffff] rounded-2xl border border-[var(--color-border)] shadow-[var(--shadow-high)] w-full max-w-md p-6 animate-scale-in">
             <div className="flex justify-between items-center mb-5">
               <h3 className="font-bold text-base text-[var(--color-navy)] font-heading">
                 {editingAccount ? "Edit Rekening" : "Tambah Rekening Baru"}
@@ -347,7 +347,7 @@ function AccountsContent() {
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="text-[var(--color-text-secondary)] hover:text-[var(--color-navy)]"
+                className="text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] p-1 rounded-lg hover:bg-[#f0f0f0] transition-all hover:rotate-90 duration-200"
               >
                 <X size={18} />
               </button>

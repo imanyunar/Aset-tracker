@@ -40,52 +40,52 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 lg:py-28 px-6 max-w-7xl mx-auto w-full flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--color-border)] bg-[#fafafa] text-xs font-semibold text-[var(--color-text-secondary)] mb-6">
-          <Sparkles size={14} className="text-[var(--color-primary)]" />
+      <section className="py-20 lg:py-28 px-6 max-w-7xl mx-auto w-full flex flex-col items-center text-center animate-page-enter">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--color-border)] bg-[#fafafa] text-xs font-semibold text-[var(--color-text-secondary)] mb-6 animate-fade-in hover:scale-105 transition-transform cursor-default">
+          <Sparkles size={14} className="text-[var(--color-primary)] animate-pulse" />
           <span>Generasi Baru Manajemen Finansial dengan AI & WhatsApp</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl max-w-4xl font-extrabold text-[var(--color-navy)] tracking-tight leading-[1.15] mb-6 font-heading">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl max-w-4xl font-extrabold text-[var(--color-navy)] tracking-tight leading-[1.15] mb-6 font-heading animate-fade-in-up delay-75">
           Pengelolaan Keuangan Presisi Tinggi untuk Pertumbuhan Finansial Anda
         </h1>
 
-        <p className="text-lg sm:text-xl text-[var(--color-text-secondary)] max-w-2xl mb-10 leading-relaxed font-body">
+        <p className="text-lg sm:text-xl text-[var(--color-text-secondary)] max-w-2xl mb-10 leading-relaxed font-body animate-fade-in-up delay-150">
           Pisahkan keuangan pribadi dan operasional bisnis secara tegas. Catat arus kas via input natural AI, pantau metrik real-time, dan dapatkan notifikasi WhatsApp instan.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-fade-in-up delay-200">
           <Link
             href="/login"
-            className="btn btn-primary text-base !py-3.5 !px-8 w-full sm:w-auto shadow-[0_4px_16px_rgba(24,122,186,0.25)]"
+            className="btn btn-primary text-base !py-3.5 !px-8 w-full sm:w-auto shadow-[0_4px_16px_rgba(24,122,186,0.25)] hover:shadow-[0_8px_24px_rgba(24,122,186,0.35)]"
           >
             <ShieldCheck size={18} />
             <span>Coba Akun Demo Alex (1-Klik)</span>
           </Link>
           <Link
             href="/register"
-            className="btn btn-secondary text-base !py-3.5 !px-8 w-full sm:w-auto"
+            className="btn btn-secondary text-base !py-3.5 !px-8 w-full sm:w-auto group"
           >
             <span>Daftar Akun Baru</span>
-            <ArrowRight size={16} />
+            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
         {/* Highlight Strip */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-12 border-t border-[var(--color-border)] w-full text-left">
-          <div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-12 border-t border-[var(--color-border)] w-full text-left animate-fade-in-up delay-300">
+          <div className="p-3 rounded-lg hover:bg-[#fafafa] transition-colors">
             <div className="text-2xl font-extrabold text-[var(--color-navy)]">100% Presisi</div>
             <div className="text-xs text-[var(--color-text-secondary)] mt-1">Saldo Integer Rupiah (No Float Drift)</div>
           </div>
-          <div>
+          <div className="p-3 rounded-lg hover:bg-[#fafafa] transition-colors">
             <div className="text-2xl font-extrabold text-[var(--color-navy)]">Multi-Workspace</div>
             <div className="text-xs text-[var(--color-text-secondary)] mt-1">Isolasi Personal & Bisnis</div>
           </div>
-          <div>
+          <div className="p-3 rounded-lg hover:bg-[#fafafa] transition-colors">
             <div className="text-2xl font-extrabold text-[var(--color-navy)]">AI Dual-Engine</div>
             <div className="text-xs text-[var(--color-text-secondary)] mt-1">Groq NLP + Gemini Vision Planner</div>
           </div>
-          <div>
+          <div className="p-3 rounded-lg hover:bg-[#fafafa] transition-colors">
             <div className="text-2xl font-extrabold text-[var(--color-navy)]">WhatsApp Bot</div>
             <div className="text-xs text-[var(--color-text-secondary)] mt-1">Alert transaksi & limit anggaran</div>
           </div>
@@ -106,11 +106,11 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Card 1 */}
-            <div className="card p-7 bg-[#ffffff] relative hover:-translate-y-1 transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[rgba(24,122,186,0.08)] flex items-center justify-center text-[var(--color-primary)] mb-5">
+            <div className="card p-7 bg-[#ffffff] relative hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group">
+              <div className="w-12 h-12 rounded-lg bg-[rgba(24,122,186,0.08)] flex items-center justify-center text-[var(--color-primary)] mb-5 transition-transform group-hover:scale-110 duration-200">
                 <Layers size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[var(--color-navy)] mb-2 font-heading">
+              <h3 className="text-xl font-bold text-[var(--color-navy)] mb-2 font-heading group-hover:text-[var(--color-primary)] transition-colors">
                 Multi-Workspace Terisolasi
               </h3>
               <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-4">
@@ -122,11 +122,11 @@ export default function HomePage() {
             </div>
 
             {/* Card 2 */}
-            <div className="card p-7 bg-[#ffffff] relative hover:-translate-y-1 transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[rgba(0,48,97,0.08)] flex items-center justify-center text-[var(--color-navy)] mb-5">
+            <div className="card p-7 bg-[#ffffff] relative hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group">
+              <div className="w-12 h-12 rounded-lg bg-[rgba(0,48,97,0.08)] flex items-center justify-center text-[var(--color-navy)] mb-5 transition-transform group-hover:scale-110 duration-200">
                 <PieChart size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[var(--color-navy)] mb-2 font-heading">
+              <h3 className="text-xl font-bold text-[var(--color-navy)] mb-2 font-heading group-hover:text-[var(--color-primary)] transition-colors">
                 Saldo Atomik & Pagu Anggaran
               </h3>
               <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-4">
@@ -138,11 +138,11 @@ export default function HomePage() {
             </div>
 
             {/* Card 3 */}
-            <div className="card p-7 bg-[#ffffff] relative hover:-translate-y-1 transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[rgba(39,174,96,0.08)] flex items-center justify-center text-[#27ae60] mb-5">
+            <div className="card p-7 bg-[#ffffff] relative hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group">
+              <div className="w-12 h-12 rounded-lg bg-[rgba(39,174,96,0.08)] flex items-center justify-center text-[#27ae60] mb-5 transition-transform group-hover:scale-110 duration-200">
                 <Smartphone size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[var(--color-navy)] mb-2 font-heading">
+              <h3 className="text-xl font-bold text-[var(--color-navy)] mb-2 font-heading group-hover:text-[var(--color-primary)] transition-colors">
                 WhatsApp Alert & AI Planner
               </h3>
               <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-4">

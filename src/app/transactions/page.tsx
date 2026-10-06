@@ -460,14 +460,14 @@ function TransactionsContent() {
       )}
 
       {/* Transactions Table Card */}
-      <div className="card bg-[#ffffff] overflow-hidden">
+      <div className="card bg-[#ffffff] overflow-hidden animate-fade-in-up delay-150 hover:shadow-md transition-all duration-300">
         {loading ? (
           <div className="p-12 text-center text-xs text-[var(--color-text-secondary)]">
             Memuat daftar transaksi...
           </div>
         ) : transactions.length === 0 ? (
-          <div className="p-16 text-center">
-            <Receipt size={40} className="mx-auto text-[var(--color-text-secondary)] mb-3 opacity-40" />
+          <div className="p-16 text-center animate-fade-in">
+            <Receipt size={40} className="mx-auto text-[var(--color-text-secondary)] mb-3 opacity-40 animate-float" />
             <h3 className="font-bold text-sm text-[var(--color-navy)]">Belum ada transaksi ditemukan</h3>
             <p className="text-xs text-[var(--color-text-secondary)] mt-1 mb-4">
               Coba sesuaikan filter pencarian atau catat transaksi baru.
@@ -674,8 +674,8 @@ function TransactionsContent() {
 
       {/* Modal Add / Edit Transaction */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#ffffff] rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-high)] w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/45 z-50 flex items-center justify-center p-4 backdrop-blur-md animate-fade-in duration-200">
+          <div className="bg-[#ffffff] rounded-2xl border border-[var(--color-border)] shadow-[var(--shadow-high)] w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto animate-scale-in">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-base text-[var(--color-navy)] font-heading">
                 {editingTx ? "Edit Transaksi" : "Catat Transaksi Baru"}
@@ -683,7 +683,7 @@ function TransactionsContent() {
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="text-[var(--color-text-secondary)] hover:text-[var(--color-navy)]"
+                className="text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] p-1 rounded-lg hover:bg-[#f0f0f0] transition-all hover:rotate-90 duration-200"
               >
                 <X size={18} />
               </button>

@@ -306,7 +306,7 @@ function CategoriesContent() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fade-in-up delay-75">
           {categories.map((cat) => {
             const Icon = ICON_MAP[cat.icon] || Tag;
             const isExpense = cat.type === "EXPENSE";
@@ -314,12 +314,12 @@ function CategoriesContent() {
             return (
               <div
                 key={cat.id}
-                className="card p-4 bg-[#ffffff] relative hover:shadow-[var(--shadow-mid)] transition-all flex flex-col justify-between"
+                className="card p-4 bg-[#ffffff] relative hover:shadow-[var(--shadow-high)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2.5">
                     <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0 transition-transform group-hover:scale-110 duration-200"
                       style={{ backgroundColor: cat.color }}
                     >
                       <Icon size={16} />

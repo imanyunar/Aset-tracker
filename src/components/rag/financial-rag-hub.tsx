@@ -166,7 +166,7 @@ export function FinancialRagHub() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 animate-fade-in-up delay-75">
           {(Object.keys(FINANCIAL_PERSONAS) as FinancialPersona[]).map((key) => {
             const persona = FINANCIAL_PERSONAS[key];
             const Icon = PERSONA_ICONS[key];
@@ -176,17 +176,17 @@ export function FinancialRagHub() {
               <div
                 key={key}
                 onClick={() => setSelectedPersona(key)}
-                className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+                className={`p-3.5 rounded-xl border cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-95 ${
                   isSelected
-                    ? "border-[var(--color-primary)] bg-[rgba(24,122,186,0.04)] shadow-sm ring-1 ring-[var(--color-primary)]"
-                    : "border-[var(--color-border)] bg-white hover:border-[var(--color-primary-light)]"
+                    ? "border-[var(--color-primary)] bg-[rgba(24,122,186,0.05)] shadow-md ring-2 ring-[var(--color-primary)]"
+                    : "border-[var(--color-border)] bg-white hover:border-[var(--color-primary)] hover:shadow-sm"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div
-                    className={`p-2 rounded-lg ${
+                    className={`p-2 rounded-lg transition-transform duration-200 ${
                       isSelected
-                        ? "bg-[var(--color-primary)] text-white"
+                        ? "bg-[var(--color-primary)] text-white scale-105"
                         : "bg-[var(--color-surface)] text-[var(--color-navy)]"
                     }`}
                   >
@@ -298,9 +298,9 @@ export function FinancialRagHub() {
 
       {/* Result Display */}
       {result && (
-        <div className="space-y-4 animate-in fade-in duration-300">
+        <div className="space-y-4 animate-fade-in-up duration-300">
           {/* Main Answer Card */}
-          <div className="bg-white rounded-xl border border-[var(--color-border)] p-6 shadow-sm space-y-4">
+          <div className="bg-white rounded-xl border border-[var(--color-border)] p-6 shadow-sm hover:shadow-md transition-all duration-300 space-y-4">
             <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 rounded-lg bg-[rgba(24,122,186,0.1)] text-[var(--color-primary)]">
@@ -331,7 +331,7 @@ export function FinancialRagHub() {
 
           {/* Academic Citations Panel */}
           {result.citations && result.citations.length > 0 && (
-            <div className="bg-white rounded-xl border border-[var(--color-border)] p-5 shadow-sm space-y-3">
+            <div className="bg-white rounded-xl border border-[var(--color-border)] p-5 shadow-sm space-y-3 animate-fade-in-up delay-100">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-[var(--color-primary)]" />
@@ -348,7 +348,7 @@ export function FinancialRagHub() {
                 {result.citations.map((cite: any, i: number) => (
                   <div
                     key={i}
-                    className="p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-white transition-colors space-y-1.5"
+                    className="p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-white hover:border-[var(--color-primary)] hover:translate-x-1 hover:shadow-sm transition-all duration-200 space-y-1.5"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">
@@ -388,8 +388,8 @@ export function FinancialRagHub() {
 
       {/* Modal: Knowledge Base Library & Live Crawler */}
       {showLibraryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4 animate-fade-in duration-200">
+          <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-scale-in">
             <div className="p-5 border-b border-[var(--color-border)] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Library className="w-5 h-5 text-[var(--color-primary)]" />
@@ -405,9 +405,9 @@ export function FinancialRagHub() {
               <button
                 type="button"
                 onClick={() => setShowLibraryModal(false)}
-                className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] font-bold px-2 py-1"
+                className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] p-1.5 rounded-lg hover:bg-[#f0f0f0] transition-all hover:rotate-90 duration-200"
               >
-                Tutup ✕
+                ✕
               </button>
             </div>
 

@@ -210,10 +210,10 @@ function DashboardContent() {
       {/* KPI Cards Row (Morgan Stanley 4-Box Metric Hierarchy) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Likuiditas */}
-        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-primary)] relative">
+        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-primary)] relative animate-fade-in-up delay-75 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
             <span>Total Likuiditas</span>
-            <Wallet size={16} className="text-[var(--color-primary)]" />
+            <Wallet size={16} className="text-[var(--color-primary)] transition-transform duration-300 group-hover:scale-110" />
           </div>
           <div className="text-2xl font-extrabold text-[var(--color-navy)] mt-2 font-heading">
             {formatRupiah(kpi.totalBalance)}
@@ -224,7 +224,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 2: Pemasukan Bulan Ini */}
-        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[#27ae60] relative">
+        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[#27ae60] relative animate-fade-in-up delay-150 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
             <span>Pemasukan Bulan Ini</span>
             <TrendingUp size={16} className="text-[#27ae60]" />
@@ -238,7 +238,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 3: Pengeluaran Bulan Ini */}
-        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-accent-red)] relative">
+        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-accent-red)] relative animate-fade-in-up delay-200 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
             <span>Pengeluaran Bulan Ini</span>
             <TrendingDown size={16} className="text-[var(--color-accent-red)]" />
@@ -252,7 +252,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 4: Rasio Tabungan */}
-        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-navy)] relative">
+        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-navy)] relative animate-fade-in-up delay-250 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
             <span>Rasio Tabungan</span>
             <Sparkles size={16} className="text-[var(--color-navy)]" />
@@ -262,7 +262,7 @@ function DashboardContent() {
               {kpi.savingsRate}%
             </span>
             <span
-              className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+              className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-transform duration-200 hover:scale-105 ${
                 kpi.savingsRate >= 20
                   ? "bg-[rgba(39,174,96,0.1)] text-[#27ae60]"
                   : "bg-[rgba(230,126,34,0.1)] text-[#e67e22]"
@@ -278,7 +278,7 @@ function DashboardContent() {
       </div>
 
       {/* Main Charts Grid (Morgan Stanley Clean Institutional Layout) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up delay-300">
         {/* Trend Arus Kas 6 Bulan (2 Columns) */}
         <div className="card p-6 bg-[#ffffff] lg:col-span-2 flex flex-col justify-between">
           <div>
@@ -422,19 +422,19 @@ function DashboardContent() {
       </div>
 
       {/* Bottom Grid: Top Accounts & Recent 5 Transactions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up delay-350">
         {/* Top Accounts (1 Column) */}
-        <div className="card p-6 bg-[#ffffff]">
+        <div className="card p-6 bg-[#ffffff] hover:shadow-md transition-all duration-300">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-sm text-[var(--color-navy)] font-heading">
               Rekening & Kas
             </h3>
             <Link
               href="/accounts"
-              className="text-xs text-[var(--color-primary)] font-semibold hover:underline flex items-center gap-1"
+              className="text-xs text-[var(--color-primary)] font-semibold hover:underline flex items-center gap-1 group"
             >
               <span>Kelola</span>
-              <ArrowRight size={12} />
+              <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
 
@@ -444,11 +444,11 @@ function DashboardContent() {
               return (
                 <div
                   key={acc.id}
-                  className="p-3 rounded-lg border border-[var(--color-border)] flex items-center justify-between hover:bg-[#fafafa] transition-colors"
+                  className="p-3 rounded-lg border border-[var(--color-border)] flex items-center justify-between hover:bg-[#fafafa] hover:border-[var(--color-primary)] hover:translate-x-1 transition-all duration-200 cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white transition-transform hover:scale-105"
                       style={{ backgroundColor: acc.color }}
                     >
                       <Icon size={16} />
@@ -472,17 +472,17 @@ function DashboardContent() {
         </div>
 
         {/* Recent Transactions (2 Columns) */}
-        <div className="card p-6 bg-[#ffffff] lg:col-span-2">
+        <div className="card p-6 bg-[#ffffff] lg:col-span-2 hover:shadow-md transition-all duration-300">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-sm text-[var(--color-navy)] font-heading">
               Transaksi Terkini
             </h3>
             <Link
               href="/transactions"
-              className="text-xs text-[var(--color-primary)] font-semibold hover:underline flex items-center gap-1"
+              className="text-xs text-[var(--color-primary)] font-semibold hover:underline flex items-center gap-1 group"
             >
               <span>Lihat Semua</span>
-              <ArrowRight size={12} />
+              <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
 
@@ -499,7 +499,7 @@ function DashboardContent() {
                 return (
                   <div
                     key={tx.id}
-                    className="py-3 flex items-center justify-between gap-3 text-xs"
+                    className="py-3 px-2 rounded-lg flex items-center justify-between gap-3 text-xs hover:bg-[#fbfcfe] hover:translate-x-1 transition-all duration-200"
                   >
                     <div className="flex items-center gap-3">
                       <div

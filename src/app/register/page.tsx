@@ -88,11 +88,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#ffffff] flex flex-col justify-center items-center p-5">
-      <div className="w-full max-w-[480px] p-8 border border-[var(--color-border)] rounded-[var(--radius-card)] shadow-[var(--shadow-mid)] bg-[#ffffff]">
+    <div className="min-h-screen bg-[#ffffff] flex flex-col justify-center items-center p-5 animate-fade-in">
+      <div className="w-full max-w-[480px] p-8 border border-[var(--color-border)] rounded-[var(--radius-card)] shadow-[var(--shadow-mid)] hover:shadow-[var(--shadow-high)] transition-all duration-300 bg-[#ffffff] animate-scale-in">
         {/* Brand Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-[var(--color-primary)] rounded-xl inline-flex items-center justify-center text-white font-extrabold text-2xl mb-3 shadow-[0_4px_14px_rgba(24,122,186,0.3)]">
+          <div className="w-12 h-12 bg-[var(--color-primary)] rounded-xl inline-flex items-center justify-center text-white font-extrabold text-2xl mb-3 shadow-[0_4px_14px_rgba(24,122,186,0.3)] animate-float">
             N
           </div>
           <h1 className="text-2xl text-[var(--color-navy)] tracking-tight">

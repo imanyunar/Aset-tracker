@@ -266,7 +266,7 @@ function BudgetsContent() {
 
       {/* Summary KPI Banner */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-primary)]">
+        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-primary)] animate-fade-in-up delay-75 hover:shadow-md transition-all duration-300">
           <div className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
             Total Pagu Anggaran
           </div>
@@ -278,7 +278,7 @@ function BudgetsContent() {
           </div>
         </div>
 
-        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-accent-red)]">
+        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-accent-red)] animate-fade-in-up delay-150 hover:shadow-md transition-all duration-300">
           <div className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
             Realisasi Belanja
           </div>
@@ -290,7 +290,7 @@ function BudgetsContent() {
           </div>
         </div>
 
-        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[#27ae60]">
+        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[#27ae60] animate-fade-in-up delay-200 hover:shadow-md transition-all duration-300">
           <div className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
             Sisa Anggaran Aman
           </div>
@@ -302,7 +302,7 @@ function BudgetsContent() {
           </div>
         </div>
 
-        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-navy)]">
+        <div className="card p-5 bg-[#ffffff] border-t-4 border-t-[var(--color-navy)] animate-fade-in-up delay-250 hover:shadow-md transition-all duration-300">
           <div className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider flex items-center justify-between">
             <span>Rasio Terpakai</span>
             <Percent size={14} className="text-[var(--color-navy)]" />
@@ -312,7 +312,7 @@ function BudgetsContent() {
           </div>
           <div className="w-full bg-[#f0f0f0] rounded-full h-2 mt-2 overflow-hidden">
             <div
-              className={`h-full transition-all rounded-full ${
+              className={`h-full rounded-full transition-all duration-700 ease-out ${
                 summary.overallPercentage >= 100
                   ? "bg-[var(--color-accent-red)]"
                   : summary.overallPercentage >= 80
@@ -387,7 +387,7 @@ function BudgetsContent() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in-up delay-300">
             {data.budgets.map((b) => {
               const isExceeded = b.status === "EXCEEDED";
               const isWarning = b.status === "WARNING";
@@ -395,7 +395,7 @@ function BudgetsContent() {
               return (
                 <div
                   key={b.id}
-                  className="card p-5 bg-[#ffffff] relative hover:shadow-[var(--shadow-high)] transition-all flex flex-col justify-between"
+                  className="card p-5 bg-[#ffffff] relative hover:shadow-[var(--shadow-high)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
                   style={{ borderTop: `4px solid ${b.categoryColor}` }}
                 >
                   <div>

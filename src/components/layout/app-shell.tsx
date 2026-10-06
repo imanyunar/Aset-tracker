@@ -119,7 +119,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
               {/* Workspace Dropdown Menu */}
               {wsDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-72 bg-[#ffffff] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-high)] z-50 p-2 animate-in fade-in duration-150">
+                <div className="absolute left-0 mt-2 w-72 bg-[#ffffff] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-high)] z-50 p-2 animate-scale-in origin-top-left">
                   <div className="px-3 py-2 text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
                     Daftar Workspace Anda
                   </div>
@@ -132,15 +132,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           setActiveWorkspaceId(ws.id);
                           setWsDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between transition-colors ${
+                        className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between transition-all ${
                           ws.id === activeWorkspaceId
-                            ? "bg-[rgba(24,122,186,0.08)] text-[var(--color-primary)] font-bold"
-                            : "hover:bg-[#f5f5f5] text-[var(--color-navy)]"
+                            ? "bg-[rgba(24,122,186,0.08)] text-[var(--color-primary)] font-bold shadow-sm"
+                            : "hover:bg-[#f5f5f5] text-[var(--color-navy)] hover:translate-x-1"
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
                           <div
-                            className={`w-5 h-5 rounded flex items-center justify-center text-white text-[10px] ${
+                            className={`w-5 h-5 rounded flex items-center justify-center text-white text-[10px] transition-transform ${
                               ws.type === "BUSINESS" ? "bg-[var(--color-navy)]" : "bg-[var(--color-primary)]"
                             }`}
                           >
@@ -165,7 +165,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         setCreateWsModalOpen(true);
                         setWsDropdownOpen(false);
                       }}
-                      className="w-full text-left px-3 py-2 rounded-lg text-xs text-[var(--color-primary)] hover:bg-[rgba(24,122,186,0.06)] font-bold flex items-center gap-2 transition-colors"
+                      className="w-full text-left px-3 py-2 rounded-lg text-xs text-[var(--color-primary)] hover:bg-[rgba(24,122,186,0.06)] font-bold flex items-center gap-2 transition-all hover:translate-x-1"
                     >
                       <Plus size={14} />
                       <span>Buat Workspace Baru</span>
@@ -180,7 +180,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3">
             {session?.user && (
               <div className="hidden md:flex items-center gap-2 text-xs text-[var(--color-navy)]">
-                <div className="w-8 h-8 rounded-full bg-[rgba(24,122,186,0.1)] text-[var(--color-primary)] font-bold flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-[rgba(24,122,186,0.1)] text-[var(--color-primary)] font-bold flex items-center justify-center shadow-sm">
                   {session.user.name?.charAt(0) || "U"}
                 </div>
                 <div>
@@ -195,7 +195,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={handleLogout}
-              className="p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-accent-red)] rounded-lg hover:bg-[rgba(198,34,52,0.06)] transition-colors"
+              className="p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-accent-red)] rounded-lg hover:bg-[rgba(198,34,52,0.06)] transition-all hover:scale-105 active:scale-95"
               title="Keluar"
             >
               <LogOut size={17} />
@@ -213,13 +213,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap ${
+                  className={`group flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap active:scale-95 ${
                     isActive
-                      ? "border-[var(--color-primary)] text-[var(--color-primary)] bg-[rgba(24,122,186,0.03)]"
-                      : "border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] hover:border-[var(--color-border)]"
+                      ? "border-[var(--color-primary)] text-[var(--color-primary)] bg-[rgba(24,122,186,0.04)] shadow-[inset_0_-2px_0_0_var(--color-primary)]"
+                      : "border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] hover:border-[var(--color-border)] hover:bg-[#fafafa]"
                   }`}
                 >
-                  <Icon size={15} />
+                  <Icon size={15} className="transition-transform group-hover:scale-110 duration-200" />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -228,15 +228,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Main Page Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+      {/* Main Page Content with Page Transition */}
+      <main key={pathname} className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 animate-page-enter">
         {children}
       </main>
 
       {/* Create Workspace Modal */}
       {createWsModalOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#ffffff] rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-high)] w-full max-w-md p-6">
+        <div className="fixed inset-0 bg-black/45 z-50 flex items-center justify-center p-4 backdrop-blur-md animate-fade-in duration-200">
+          <div className="bg-[#ffffff] rounded-2xl border border-[var(--color-border)] shadow-[var(--shadow-high)] w-full max-w-md p-6 animate-scale-in">
             <div className="flex justify-between items-center mb-5">
               <div className="flex items-center gap-2">
                 <Shield size={18} className="text-[var(--color-primary)]" />
@@ -247,7 +247,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => setCreateWsModalOpen(false)}
-                className="text-[var(--color-text-secondary)] hover:text-[var(--color-navy)]"
+                className="text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] p-1 rounded-lg hover:bg-[#f0f0f0] transition-all hover:rotate-90 duration-200"
               >
                 <X size={18} />
               </button>
