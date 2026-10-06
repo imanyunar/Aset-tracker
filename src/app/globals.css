@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bg: #ffffff;
+    --color-bg-subtle: #f8fafd;
+    --color-bg-card: #ffffff;
+    --color-surface-hover: #f3f7fa;
+
+    --color-primary: #187aba;
+    --color-primary-hover: #14669c;
+    --color-secondary: #1876b5;
+    --color-navy: #003061;
+    --color-accent-blue: #3860be;
+    --color-accent-red: #c62234;
+    --color-accent-green: #10874e;
+    --color-accent-gold: #b37400;
+
+    --color-text: #000000;
+    --color-text-secondary: #666666;
+    --color-text-muted: #888888;
+    --color-border: #f2f2f2;
+    --color-border-dark: #e1e1e1;
+    --color-border-focus: #187aba;
+
+    --radius-subtle: 2px;
+    --radius-button: 10px;
+    --radius-card: 20px;
+
+    --shadow-low: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-mid: 0 4px 18px rgba(0, 0, 0, 0.08);
+    --shadow-high: rgba(0, 0, 0, 0.18) 0px 10px 30px 0px;
+    --shadow-accent-card: rgb(15, 142, 199) 6px 0px 0px 0px inset, 0 4px 16px rgba(0, 0, 0, 0.04);
+    --shadow-dropdown: rgb(153, 153, 153) 0px 4px 14px -3px;
+
+    --font-heading: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Karla', sans-serif;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-text);
+    font-weight: 700;
+  }
+}
+
+/* Custom Design Components */
+.card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-low);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-mid);
+  border-color: var(--color-border-dark);
+}
+
+.card-accent {
+  box-shadow: var(--shadow-accent-card);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--radius-button);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 44px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 122, 186, 0.28);
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: var(--color-navy);
+  border-color: var(--color-border-dark);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 13px;
+  min-height: 36px;
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text);
+  background: #ffffff;
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-button);
+  padding: 12px 14px;
+  outline: none;
+  transition: all 0.15s ease;
+  min-height: 44px;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(24, 122, 186, 0.15);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  line-height: 1.2;
+}
+
+.badge-income {
+  background-color: rgba(16, 135, 78, 0.1);
+  color: var(--color-accent-green);
+}
+
+.badge-expense {
+  background-color: rgba(198, 34, 52, 0.1);
+  color: var(--color-accent-red);
+}
+
+.badge-transfer {
+  background-color: rgba(24, 122, 186, 0.1);
+  color: var(--color-primary);
+}
+
+.badge-neutral {
+  background-color: #f2f2f2;
+  color: #555555;
+}

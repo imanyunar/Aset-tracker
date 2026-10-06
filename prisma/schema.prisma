@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+// -------------------------------------------------------------
+// ENUMS (Domain Port from Laravel)
+// -------------------------------------------------------------
+
+enum WorkspaceType {
+  PERSONAL
+  BUSINESS
+}
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum AccountType {
+  CASH
+  BANK
+  EWALLET
+  CREDIT_CARD
+  OTHER
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+  TRANSFER
+}
+
+// -------------------------------------------------------------
+// BETTER AUTH MODELS
+// -------------------------------------------------------------
+
+model User {
+  id             String    @id @default(cuid())
+  name           String
+  email          String    @unique
+  emailVerified  Boolean   @default(false)
+  image          String?
+  whatsappNumber String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  sessions       Session[]
+  accounts       Account[] // Better Auth credentials/OAuth
+  memberships    WorkspaceMember[]
+  transactions   Transaction[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("auth_accounts")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+// -------------------------------------------------------------
+// NEXAFINANCE DOMAIN MODELS
+// -------------------------------------------------------------
+
+model Workspace {
+  id        String        @id @default(cuid())
+  name      String
+  type      WorkspaceType @default(PERSONAL)
+  currency  String        @default("IDR")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  members      WorkspaceMember[]
+  accounts     FinancialAccount[]
+  categories   Category[]
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String        @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceRole @default(MEMBER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@map("workspace_members")
+}
+
+model FinancialAccount {
+  id             String      @id @default(cuid())
+  workspaceId    String
+  name           String
+  type           AccountType @default(BANK)
+  openingBalance BigInt      @default(0) // Nilai dalam Rupiah Integer
+  balance        BigInt      @default(0) // Saldo terkini dalam Rupiah Integer
+  color          String      @default("#187aba")
+  isArchived     Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  workspace            Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  outgoingTransactions Transaction[] @relation("SourceAccount")
+  incomingTransactions Transaction[] @relation("DestinationAccount")
+
+  @@map("accounts")
+}
+
+model Category {
+  id          String       @id @default(cuid())
+  workspaceId String
+  name        String
+  type        CategoryType
+  icon        String       @default("tag")
+  color       String       @default("#187aba")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  workspace    Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@unique([workspaceId, type, name])
+  @@map("categories")
+}
+
+model Transaction {
+  id            String          @id @default(cuid())
+  workspaceId   String
+  accountId     String
+  toAccountId   String?
+  categoryId    String?
+  userId        String?
+  type          TransactionType
+  amount        BigInt // Disimpan dalam Rupiah Integer (bukan float)
+  description   String
+  notes         String?
+  transactedAt  DateTime
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  workspace   Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  account     FinancialAccount  @relation("SourceAccount", fields: [accountId], references: [id], onDelete: Restrict)
+  toAccount   FinancialAccount? @relation("DestinationAccount", fields: [toAccountId], references: [id], onDelete: Restrict)
+  category    Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  user        User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, transactedAt])
+  @@index([workspaceId, type, transactedAt])
+  @@map("transactions")
+}
+
+model Budget {
+  id          String   @id @default(cuid())
+  workspaceId String
+  categoryId  String
+  amount      BigInt // Target batas pengeluaran bulanan (Rupiah Integer)
+  period      String   @default("monthly") // e.g. "2026-10"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, categoryId, period])
+  @@map("budgets")
+}
