@@ -23,13 +23,15 @@ import {
   ArrowRightLeft,
   Bot,
   User,
+  GraduationCap,
 } from "lucide-react";
+import { FinancialRagHub } from "@/components/rag/financial-rag-hub";
 
-type ActiveTab = "nlp" | "planner" | "chat";
+type ActiveTab = "rag" | "nlp" | "planner" | "chat";
 
 function AiPageContent() {
   const { activeWorkspace, activeWorkspaceId, refreshWorkspaces } = useWorkspace();
-  const [activeTab, setActiveTab] = useState<ActiveTab>("nlp");
+  const [activeTab, setActiveTab] = useState<ActiveTab>("rag");
 
   // Tab 1: NLP State
   const [nlpText, setNlpText] = useState("");
@@ -293,11 +295,27 @@ function AiPageContent() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-[var(--color-border)] pb-3">
+      <div className="flex items-center gap-2 border-b border-[var(--color-border)] pb-3 overflow-x-auto scrollbar-none">
+        <button
+          type="button"
+          onClick={() => setActiveTab("rag")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+            activeTab === "rag"
+              ? "bg-[var(--color-navy)] text-white shadow-sm"
+              : "bg-[#ffffff] text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] border border-[var(--color-border)]"
+          }`}
+        >
+          <GraduationCap size={15} className={activeTab === "rag" ? "text-white" : "text-[var(--color-primary)]"} />
+          <span>RAG Advisor & Jurnal Ilmiah</span>
+          <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-600 text-[10px] rounded font-mono font-bold ml-1">
+            4 Persona
+          </span>
+        </button>
+
         <button
           type="button"
           onClick={() => setActiveTab("nlp")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
             activeTab === "nlp"
               ? "bg-[var(--color-navy)] text-white shadow-sm"
               : "bg-[#ffffff] text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] border border-[var(--color-border)]"
@@ -310,7 +328,7 @@ function AiPageContent() {
         <button
           type="button"
           onClick={() => setActiveTab("planner")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
             activeTab === "planner"
               ? "bg-[var(--color-navy)] text-white shadow-sm"
               : "bg-[#ffffff] text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] border border-[var(--color-border)]"
@@ -323,7 +341,7 @@ function AiPageContent() {
         <button
           type="button"
           onClick={() => setActiveTab("chat")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
             activeTab === "chat"
               ? "bg-[var(--color-navy)] text-white shadow-sm"
               : "bg-[#ffffff] text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] border border-[var(--color-border)]"
@@ -333,6 +351,11 @@ function AiPageContent() {
           <span>Tanya NexaAI (Chat)</span>
         </button>
       </div>
+
+      {/* ========================================================================= */}
+      {/* TAB 0: RAG INSTITUTIONAL ADVISOR & ACADEMIC RESEARCH */}
+      {/* ========================================================================= */}
+      {activeTab === "rag" && <FinancialRagHub />}
 
       {/* ========================================================================= */}
       {/* TAB 1: NLP & VISION OCR */}

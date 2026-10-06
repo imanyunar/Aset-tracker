@@ -223,3 +223,44 @@ model Budget {
   @@unique([workspaceId, categoryId, period])
   @@map("budgets")
 }
+
+// -------------------------------------------------------------
+// RAG & FINANCIAL INTELLIGENCE ENGINE (pgvector)
+// -------------------------------------------------------------
+
+model KnowledgeDocument {
+  id          String   @id @default(cuid())
+  workspaceId String?
+  title       String
+  authors     String?
+  year        Int?
+  journal     String?
+  doi         String?
+  url         String?
+  category    String
+  scope       String   @default("INTERNATIONAL")
+  abstract    String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chunks DocumentChunk[]
+
+  @@index([category])
+  @@index([scope])
+  @@map("knowledge_documents")
+}
+
+model DocumentChunk {
+  id         String   @id @default(cuid())
+  documentId String
+  chunkIndex Int
+  content    String   @db.Text
+  embedding  Unsupported("vector(768)")?
+  createdAt  DateTime @default(now())
+
+  document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@map("document_chunks")
+}
+
