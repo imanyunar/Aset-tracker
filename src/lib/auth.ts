@@ -11,6 +11,12 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
   },
+  trustedOrigins: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://nexafinance-alpha.vercel.app",
+    "https://*.vercel.app",
+  ],
   user: {
     additionalFields: {
       whatsappNumber: {
