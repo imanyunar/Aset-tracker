@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { FINANCIAL_PERSONAS, FinancialPersona } from "./personas";
 import { getEmbedding, searchSimilarChunks, SimilarChunkResult } from "./embedding-service";
 import { searchAllAcademicSources, AcademicPaper } from "./academic-crawler";
+import { searchGoogleFinancialNews, WebCrawledArticle } from "./web-crawler";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
@@ -15,7 +16,7 @@ export interface Citation {
   url?: string;
   doi?: string;
   scope: string;
-  sourceType: "VECTOR_DB" | "LIVE_ARXIV" | "LIVE_OPENALEX" | "REGULATORY_PSAK";
+  sourceType: "VECTOR_DB" | "LIVE_ARXIV" | "LIVE_OPENALEX" | "REGULATORY_PSAK" | "GOOGLE_NEWS" | "WEB_CRAWLED";
 }
 
 export interface RagResponse {
@@ -102,23 +103,46 @@ ${recentTx
     console.warn("[RAG] Failed to pull workspace context:", err);
   }
 
-  // 2. Vector DB Retrieval via Neon pgvector
+  // 2. Vector DB Retrieval via Neon pgvector (includes previous web crawled docs)
   const queryEmbedding = await getEmbedding(query);
   const vectorChunks = await searchSimilarChunks(queryEmbedding, 4);
 
-  // 3. Live Academic Retrieval (arXiv, OpenAlex, National PSAK)
+  // 3. Live Web & Academic Retrieval (Google Financial News + arXiv/OpenAlex/PSAK)
   let livePapers: AcademicPaper[] = [];
+  let liveWebArticles: WebCrawledArticle[] = [];
+
   if (enableLiveAcademicSearch) {
     try {
-      livePapers = await searchAllAcademicSources(query);
+      const [papers, webNews] = await Promise.all([
+        searchAllAcademicSources(query).catch(() => []),
+        searchGoogleFinancialNews(query, { limit: 3 }).catch(() => []),
+      ]);
+      livePapers = papers;
+      liveWebArticles = webNews;
     } catch (err) {
-      console.warn("[RAG] Live academic search failed:", err);
+      console.warn("[RAG] Live web/academic search failed:", err);
     }
   }
 
   // 4. Consolidate Citations
   const citations: Citation[] = [];
   const addedTitles = new Set<string>();
+
+  // Add Google News live articles first for maximum real-time relevance
+  for (const art of liveWebArticles) {
+    if (!addedTitles.has(art.title)) {
+      addedTitles.add(art.title);
+      citations.push({
+        title: art.title,
+        authors: art.source,
+        year: art.publishedAt ? new Date(art.publishedAt).getFullYear() : new Date().getFullYear(),
+        journal: `Google Financial News (${art.source})`,
+        url: art.url,
+        scope: art.scope,
+        sourceType: "GOOGLE_NEWS",
+      });
+    }
+  }
 
   for (const chunk of vectorChunks) {
     if (!addedTitles.has(chunk.title)) {
@@ -131,12 +155,12 @@ ${recentTx
         url: chunk.url || undefined,
         doi: chunk.doi || undefined,
         scope: chunk.scope,
-        sourceType: "VECTOR_DB",
+        sourceType: chunk.journal?.includes("Google") ? "WEB_CRAWLED" : "VECTOR_DB",
       });
     }
   }
 
-  for (const paper of livePapers.slice(0, 4)) {
+  for (const paper of livePapers.slice(0, 3)) {
     if (!addedTitles.has(paper.title)) {
       addedTitles.add(paper.title);
       citations.push({
@@ -154,11 +178,15 @@ ${recentTx
 
   // 5. Construct Grounded Prompt for Gemini / LLM
   const retrievedLiteratureText = [
+    ...liveWebArticles.map(
+      (a, i) => `[Berita Ekonomi & Web Terkini ${i + 1}] Judul: "${a.title}" (Sumber: ${a.source}, ${a.publishedAt || "Hari ini"})
+Ringkasan/Fakta: ${a.snippet}`
+    ),
     ...vectorChunks.map(
       (c, i) => `[Rujukan Vektor ${i + 1}] Judul: "${c.title}" (${c.authors || "Pakar"}, ${c.year || ""}) - ${c.journal}
 Kutipan Inti: ${c.content}`
     ),
-    ...livePapers.slice(0, 3).map(
+    ...livePapers.slice(0, 2).map(
       (p, i) => `[Rujukan Jurnal Ilmiah ${i + 1}] Judul: "${p.title}" (${p.authors.join(", ")}, ${p.year}) - ${p.journalOrSource}
 Abstrak: ${p.abstract}`
     ),

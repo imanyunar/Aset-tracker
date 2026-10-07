@@ -103,6 +103,14 @@ export async function searchSimilarChunks(
       "INVESTMENT_BANKING",
       "ASSET_MANAGEMENT",
       "AUDITOR",
+      "MACROECONOMICS",
+      "FINANCIAL_MARKETS",
+      "MONETARY_POLICY",
+      "BANKING_REGULATION",
+      "CORPORATE_FINANCE",
+      "ECONOMIC_NEWS",
+      "WEB_SEARCH",
+      "GLOBAL_ECONOMY",
     ]);
 
     const sanitizedCategory = categoryFilter && ALLOWED_CATEGORIES.has(categoryFilter)
