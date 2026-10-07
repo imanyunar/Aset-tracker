@@ -9,6 +9,7 @@ import {
   saveLearnedMemory,
 } from "@/lib/ai/learning-engine";
 import { enforceRateLimit } from "@/lib/rate-limit";
+import { getLiveMarketContextForQuery } from "@/lib/ai/market-data";
 import { TransactionType } from "@prisma/client";
 import { z } from "zod";
 
@@ -84,7 +85,12 @@ export async function POST(req: Request, { params }: RouteParams) {
     const monthlyExpense = Number(expenseAgg._sum.amount || BigInt(0));
 
     // 2. Continuous Learning Retrieval & Information Processing
-    const learnedMemories = await getWorkspaceLearnedMemories(workspaceId);
+    const recentContextText = messages.slice(-3).map((m) => m.content).join(" ");
+    const [learnedMemories, marketContext] = await Promise.all([
+      getWorkspaceLearnedMemories(workspaceId),
+      getLiveMarketContextForQuery(recentContextText || lastUserMessage),
+    ]);
+
     const synthesized = synthesizeInformationContext({
       workspaceName: workspace.name,
       totalBalance,
@@ -95,8 +101,8 @@ export async function POST(req: Request, { params }: RouteParams) {
       userQuery: lastUserMessage,
     });
 
-    // 3. Generate response with integrated intelligence
-    const reply = await chatWithFinancialAssistant({
+    // 3. Generate response with integrated intelligence & real-time grounding
+    const assistantResult = await chatWithFinancialAssistant({
       messages,
       workspaceContext: {
         workspaceName: workspace.name,
@@ -106,6 +112,7 @@ export async function POST(req: Request, { params }: RouteParams) {
         monthlyExpense,
         accounts: accounts.map((a) => a.name),
         memoryContext: synthesized.synthesizedPromptContext,
+        liveMarketContext: marketContext.marketContextText,
       },
     });
 
@@ -128,7 +135,14 @@ export async function POST(req: Request, { params }: RouteParams) {
 
     return NextResponse.json({
       success: true,
-      reply,
+      reply: assistantResult.reply,
+      sources: assistantResult.sources || [],
+      isGrounded: assistantResult.isGrounded,
+      toolExecuted: {
+        name: assistantResult.isGrounded ? "google_search_grounding" : "active_cognitive_reasoning",
+        label: assistantResult.toolExecutedName,
+        status: "success",
+      },
       learnedMemory: newlyLearnedMemory
         ? {
             id: newlyLearnedMemory.id,

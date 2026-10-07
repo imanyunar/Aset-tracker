@@ -43,3 +43,5 @@ next-env.d.ts
 
 # standalone frontend repo
 /frontend
+
+.env*

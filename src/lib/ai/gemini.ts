@@ -215,8 +215,15 @@ export async function generate503020FinancialPlan({
   };
 }
 
+export interface ChatAssistantResult {
+  reply: string;
+  sources: Array<{ title: string; uri: string }>;
+  isGrounded: boolean;
+  toolExecutedName: string;
+}
+
 /**
- * Interactive financial advisor chat powered by Gemini.
+ * Interactive financial advisor chat powered by Gemini 2.5 Flash with live Google Search Grounding.
  */
 export async function chatWithFinancialAssistant({
   messages,
@@ -231,19 +238,35 @@ export async function chatWithFinancialAssistant({
     monthlyExpense: number;
     accounts: string[];
     memoryContext?: string;
+    liveMarketContext?: string;
   };
-}): Promise<string> {
+}): Promise<ChatAssistantResult> {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (apiKey) {
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const currentDate = new Date().toLocaleDateString("id-ID", {
+        timeZone: "Asia/Jakarta",
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
 
-      const systemInstruction = `Anda adalah Nexa AI Agent, asisten finansial cerdas dan autonomous agent untuk workspace "${workspaceContext.workspaceName}" milik Mas Iman Azizi.
+      const systemInstruction = `Anda adalah Nexa AI Agent, asisten finansial cerdas dan autonomous financial agent untuk workspace "${workspaceContext.workspaceName}" milik Mas Iman Azizi.
 Karakter: Sigap, cerdas, santun, objektif, berorientasi angka, dan siap membantu pencatatan transaksi otomatis, audit kas, dan analisis keuangan real-time.
 
-KONTEKS FINANSIAL SAAT INI:
+WAKTU & DATA REAL-TIME SAAT INI:
+- Tanggal Sekarang: ${currentDate} (WIB)
+- Anda memiliki akses langsung ke GOOGLE SEARCH GROUNDING dan data pasar interbank terkini.
+- PERATURAN KRITIS AKURASI DATA: Bila pengguna menanyakan kurs valuta asing (USD ke IDR, EUR, SGD, JPY, dll.), suku bunga (BI-Rate, Fed Rate), inflasi, harga emas, IHSG, atau berita ekonomi terkini:
+  1. WAJIB rujuk data real-time terkini (misal kurs e-Rate BCA, Bank Indonesia, Wise, Investing.com) yang Anda dapatkan melalui Google Search Grounding atau data pasar yang diberikan di bawah.
+  2. DILARANG KERAS mengarang, berhalusinasi, atau menggunakan angka historis lama (misal 16.140 atau 16.235).
+  3. Sebutkan secara eksplisit rincian kurs (misal kurs jual/beli BCA e-Rate atau kurs tengah spot) beserta tanggal/waktu rujukannya.
+${workspaceContext.liveMarketContext || ""}
+
+KONTEKS FINANSIAL INTERNAL WORKSPACE SAAT INI:
 - Workspace: ${workspaceContext.workspaceName} (${workspaceContext.workspaceType})
 - Total Likuiditas / Saldo: ${formatRupiah(workspaceContext.totalBalance)}
 - Pemasukan Bulan Ini: ${formatRupiah(workspaceContext.monthlyIncome)}
@@ -251,25 +274,71 @@ KONTEKS FINANSIAL SAAT INI:
 - Rekening Aktif: ${workspaceContext.accounts.join(", ")}
 ${workspaceContext.memoryContext || ""}
 
-Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringkas, dan actionable. Bila pengguna meminta aksi, berikan instruksi dan konfirmasi yang jelas. Jika pengguna mengajarkan aturan, preferensi, atau target baru, akui dan terapkan secara langsung dalam analisis Anda.`;
+Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringkas, profesional, dan actionable. Jika pengguna mengajarkan aturan atau target baru, akui dan terapkan secara langsung dalam analisis Anda.`;
 
-      const formattedHistory = messages.slice(0, -1).map((m) => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.content }],
-      }));
+      // Enable real-time Google Search Grounding with systemInstruction
+      const model = genAI.getGenerativeModel({
+        model: "gemini-2.5-flash",
+        systemInstruction,
+        tools: [{ googleSearch: {} } as any],
+      });
+
+      // Prepare conversation history: Gemini chat history must start with 'user' and alternate
+      const historyTurns = messages.slice(0, -1);
+      const firstUserIndex = historyTurns.findIndex((m) => m.role === "user");
+      const validHistory = firstUserIndex !== -1 ? historyTurns.slice(firstUserIndex) : [];
+
+      const formattedHistory: Array<{ role: string; parts: Array<{ text: string }> }> = [];
+      let lastRole: string | null = null;
+      for (const m of validHistory) {
+        const role = m.role === "assistant" ? "model" : "user";
+        if (role !== lastRole) {
+          formattedHistory.push({
+            role,
+            parts: [{ text: m.content }],
+          });
+          lastRole = role;
+        } else if (formattedHistory.length > 0) {
+          formattedHistory[formattedHistory.length - 1].parts[0].text += `\n\n${m.content}`;
+        }
+      }
 
       const lastUserMessage = messages[messages.length - 1]?.content || "Halo";
 
       const chat = model.startChat({
-        history: [
-          { role: "user", parts: [{ text: systemInstruction }] },
-          { role: "model", parts: [{ text: "Siap, saya memahami seluruh konteks finansial workspace Anda. Saya siap bertindak sebagai agent dan asisten keuangan Anda. Ada yang bisa saya bantu?" }] },
-          ...formattedHistory,
-        ],
+        history: formattedHistory,
       });
 
       const response = await chat.sendMessage(lastUserMessage);
-      return response.response.text();
+      const text = response.response.text();
+
+      // Extract Grounding Metadata (Real-world search citations)
+      const grounding = response.response.candidates?.[0]?.groundingMetadata;
+      const chunks = grounding?.groundingChunks || [];
+      const sources: Array<{ title: string; uri: string }> = [];
+
+      chunks.forEach((c: any) => {
+        if (c.web?.title && c.web?.uri) {
+          // Avoid duplicate source links
+          if (!sources.some((s) => s.uri === c.web.uri)) {
+            sources.push({
+              title: c.web.title,
+              uri: c.web.uri,
+            });
+          }
+        }
+      });
+
+      const isGrounded = sources.length > 0 || (grounding?.webSearchQueries && grounding.webSearchQueries.length > 0);
+
+      return {
+        reply: text,
+        sources: sources.slice(0, 4),
+        isGrounded: !!isGrounded,
+        toolExecutedName: isGrounded
+          ? "Google Search Grounding & Live Market Data"
+          : "Gemini 2.5 Active Cognitive Reasoning",
+      };
     } catch (err) {
       console.warn("[GeminiChat] Gemini API error, falling back to contextual assistant:", err);
     }
@@ -278,8 +347,18 @@ Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringka
   // Fallback intelligent responder
   const lastMsg = messages[messages.length - 1]?.content.toLowerCase() || "";
   if (lastMsg.includes("anggaran") || lastMsg.includes("budget") || lastMsg.includes("50/30/20")) {
-    return `Berdasarkan data keuangan di **${workspaceContext.workspaceName}**, total saldo likuiditas Anda saat ini adalah **${formatRupiah(workspaceContext.totalBalance)}**.\n\nRekomendasi alokasi 50/30/20 untuk pemasukan bulan ini (${formatRupiah(workspaceContext.monthlyIncome)}):\n- **50% Kebutuhan Pokok**: Maksimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.5))}\n- **30% Keinginan**: Maksimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.3))}\n- **20% Tabungan/Investasi**: Minimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.2))}\n\nPastikan pengeluaran harian tidak melampaui batas pagu kategori yang telah ditentukan.`;
+    return {
+      reply: `Berdasarkan data keuangan di **${workspaceContext.workspaceName}**, total saldo likuiditas Anda saat ini adalah **${formatRupiah(workspaceContext.totalBalance)}**.\n\nRekomendasi alokasi 50/30/20 untuk pemasukan bulan ini (${formatRupiah(workspaceContext.monthlyIncome)}):\n- **50% Kebutuhan Pokok**: Maksimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.5))}\n- **30% Keinginan**: Maksimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.3))}\n- **20% Tabungan/Investasi**: Minimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.2))}\n\nPastikan pengeluaran harian tidak melampaui batas pagu kategori yang telah ditentukan.`,
+      sources: [],
+      isGrounded: false,
+      toolExecutedName: "Nexa Financial Rules Engine",
+    };
   }
 
-  return `Halo Mas Iman Azizi! Saya Nexa AI Agent, asisten dan autonomous financial agent Anda di **${workspaceContext.workspaceName}**.\n\nRingkasan keuangan Anda saat ini:\n- **Total Likuiditas**: ${formatRupiah(workspaceContext.totalBalance)}\n- **Pemasukan Bulan Ini**: ${formatRupiah(workspaceContext.monthlyIncome)}\n- **Pengeluaran Bulan Ini**: ${formatRupiah(workspaceContext.monthlyExpense)}\n- **Arus Kas Bersih**: ${formatRupiah(workspaceContext.monthlyIncome - workspaceContext.monthlyExpense)}\n\nSaya dapat mencatat transaksi otomatis untuk Anda (misal: "Catat makan siang 35rb pakai BCA"), memeriksa saldo seluruh rekening, atau menganalisis arus kas. Silakan beri perintah!`;
+  return {
+    reply: `Halo Mas Iman Azizi! Saya Nexa AI Agent, asisten dan autonomous financial agent Anda di **${workspaceContext.workspaceName}**.\n\nRingkasan keuangan Anda saat ini:\n- **Total Likuiditas**: ${formatRupiah(workspaceContext.totalBalance)}\n- **Pemasukan Bulan Ini**: ${formatRupiah(workspaceContext.monthlyIncome)}\n- **Pengeluaran Bulan Ini**: ${formatRupiah(workspaceContext.monthlyExpense)}\n- **Arus Kas Bersih**: ${formatRupiah(workspaceContext.monthlyIncome - workspaceContext.monthlyExpense)}\n\nSaya dapat mencatat transaksi otomatis untuk Anda (misal: "Catat makan siang 35rb pakai BCA"), memeriksa saldo seluruh rekening, memeriksa kurs valuta asing real-time, atau menganalisis arus kas. Silakan beri perintah!`,
+    sources: [],
+    isGrounded: false,
+    toolExecutedName: "Nexa Core Engine",
+  };
 }
