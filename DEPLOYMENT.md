@@ -117,12 +117,31 @@ Setelah tautan domain Vercel aktif (contoh: `https://nexafinance.vercel.app`), l
 4. **Pencatatan Transaksi & Saldo Atomik (`/transactions`)**:
    - Catat transaksi pengeluaran baru. Pastikan saldo rekening langsung berkurang secara atomik.
    - Hapus transaksi tersebut dan pastikan saldo langsung kembali ke nominal awal (*zero drift*).
-5. **Pagu Anggaran & Bot WhatsApp (`/budgets`)**:
+5. **Pagu Anggaran & Bot WhatsApp 2-Arah (`/budgets`)**:
    - Buka menu **Pagu Anggaran & WA**.
-   - Klik **"Tes WhatsApp"** dan masukkan nomor Anda untuk menguji koneksi webhook.
-6. **Asisten AI (`/ai`)**:
-   - Coba ketik kalimat: *"Beli makan siang nasi kapau 40rb bayar tunai"*. Pastikan entitas terekstrak otomatis.
-   - Coba konsultasi di tab **Tanya NexaAI**.
+   - Klik **"Tes WhatsApp"** untuk membuka *WhatsApp Integration Hub*.
+   - Tab **"Simulator Bot 2-Way"**: Coba kirim pesan seperti *"Makan siang soto 35rb bayar bca"*, *"saldo"*, *"ringkasan"*, atau *"anggaran"* untuk melihat balasan bot dan mutasi saldo seketika.
+   - Tab **"Uji Kirim Keluar"**: Uji kirim pesan notifikasi langsung ke nomor HP Anda.
+
+---
+
+## 🤖 Langkah 6: Mengaktifkan Bot WhatsApp 2-Arah (Inbound Webhook)
+
+Agar bot dapat menerima pesan langsung dari WhatsApp di HP Anda dan mencatat transaksi otomatis:
+
+1. **Buka Dashboard Penyedia WhatsApp**:
+   - **Fonnte**: Buka menu **Device / Perangkat** > klik ikon gear/pengaturan pada perangkat aktif Anda > temukan kolom **Webhook URL**.
+   - **Wablas**: Buka menu **Device** > **Webhook & Autoreply** > aktifkan Webhook.
+2. **Masukkan Webhook URL**:
+   ```text
+   https://domain-anda.vercel.app/api/whatsapp/webhook
+   ```
+3. **Pastikan Nomor Anda Terdaftar**:
+   - Nomor WhatsApp HP Anda harus didaftarkan di kolom `whatsappNumber` pada tabel `users` (format `628xxxxxxxx`).
+4. **Coba Chat dari HP Anda**:
+   - Ketik: *"Makan siang padang 35rb bayar bca"* -> Bot membalas tanda terima dan saldo BCA Anda otomatis berkurang!
+   - Ketik: *"saldo"* -> Bot membalas rincian seluruh rekening Anda.
+   - Ketik: *"ringkasan"* -> Bot membalas arus kas bulan ini.
 
 ---
 

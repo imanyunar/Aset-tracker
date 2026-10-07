@@ -47,3 +47,4 @@ export * from "./templates";
 export * from "./fonnte.driver";
 export * from "./wablas.driver";
 export * from "./mock.driver";
+export * from "./bot-handler";

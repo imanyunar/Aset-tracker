@@ -69,12 +69,26 @@ function BudgetsContent() {
   const [savingBudget, setSavingBudget] = useState(false);
   const [budgetModalError, setBudgetModalError] = useState<string | null>(null);
 
-  // Modal State WhatsApp Test
+  // Modal State WhatsApp Test & 2-Way Simulator
   const [waModalOpen, setWaModalOpen] = useState(false);
+  const [waTab, setWaTab] = useState<"simulator" | "outbound">("simulator");
   const [testPhone, setTestPhone] = useState("");
   const [testMessage, setTestMessage] = useState("");
   const [sendingWa, setSendingWa] = useState(false);
   const [waResult, setWaResult] = useState<{ success?: boolean; message?: string } | null>(null);
+
+  // Simulator Chat State
+  const [simInput, setSimInput] = useState("");
+  const [simLoading, setSimLoading] = useState(false);
+  const [simMessages, setSimMessages] = useState<
+    Array<{ sender: "user" | "bot"; text: string; time: string }>
+  >([
+    {
+      sender: "bot",
+      text: "🤖 *NEXAFINANCE ASISTEN WHATSAPP*\nHalo! Kirim *menu* atau ketik transaksi keuangan Anda (contoh: _Makan siang 35rb bayar bca_ / _saldo_ / _ringkasan_).",
+      time: "Baru saja",
+    },
+  ]);
 
   const fetchBudgets = useCallback(async () => {
     if (!activeWorkspaceId) return;
@@ -204,6 +218,49 @@ function BudgetsContent() {
       setWaResult({ success: false, message: err.message || "Gagal menghubungi server" });
     } finally {
       setSendingWa(false);
+    }
+  };
+
+  const handleSendSimulator = async (presetText?: string) => {
+    const textToSend = presetText || simInput;
+    if (!textToSend.trim() || simLoading) return;
+
+    const phone = testPhone || (session?.user as any)?.whatsappNumber || "6281234567890";
+    const now = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+
+    setSimMessages((prev) => [...prev, { sender: "user", text: textToSend, time: now }]);
+    setSimInput("");
+    setSimLoading(true);
+
+    try {
+      const res = await fetch("/api/whatsapp/webhook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sender: phone,
+          message: textToSend,
+        }),
+      });
+      const data = await res.json();
+      const replyText = data.replyPreview || data.error || "Tidak ada respon dari bot.";
+      setSimMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: replyText,
+          time: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+      if (data.actionTaken === "TRANSACTION_CREATED") {
+        fetchBudgets();
+      }
+    } catch (err: any) {
+      setSimMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: `❌ Terjadi kesalahan: ${err.message}`, time: now },
+      ]);
+    } finally {
+      setSimLoading(false);
     }
   };
 
@@ -604,84 +661,220 @@ function BudgetsContent() {
         </div>
       )}
 
-      {/* Modal Test WhatsApp */}
+      {/* Modal WhatsApp Hub (2-Way Simulator & Outbound Test) */}
       {waModalOpen && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#ffffff] rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-high)] w-full max-w-md p-6">
-            <div className="flex justify-between items-center mb-4">
+          <div className="bg-[#ffffff] rounded-2xl border border-[var(--color-border)] shadow-[var(--shadow-high)] w-full max-w-xl p-6 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center pb-3 border-b border-[var(--color-border)]">
               <div className="flex items-center gap-2">
-                <Smartphone size={18} className="text-[var(--color-primary)]" />
-                <h3 className="font-bold text-base text-[var(--color-navy)] font-heading">
-                  Uji Coba Pengiriman WhatsApp
-                </h3>
+                <div className="w-8 h-8 rounded-lg bg-[rgba(16,135,78,0.12)] text-[#10874e] flex items-center justify-center">
+                  <Smartphone size={18} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-[var(--color-navy)] font-heading leading-tight">
+                    WhatsApp Integration Hub
+                  </h3>
+                  <p className="text-[11px] text-[var(--color-text-secondary)]">
+                    Bot 2-Arah Interaktif & Peringatan Anggaran Real-Time
+                  </p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setWaModalOpen(false)}
-                className="text-[var(--color-text-secondary)] hover:text-[var(--color-navy)]"
+                className="text-[var(--color-text-secondary)] hover:text-[var(--color-navy)] p-1 rounded-md"
               >
                 <X size={18} />
               </button>
             </div>
 
-            {waResult && (
-              <div
-                className={`p-3 rounded-lg text-xs flex items-center gap-2 mb-4 ${
-                  waResult.success
-                    ? "bg-[rgba(39,174,96,0.1)] text-[#27ae60] border border-[rgba(39,174,96,0.2)]"
-                    : "bg-[rgba(198,34,52,0.1)] text-[var(--color-accent-red)] border border-[rgba(198,34,52,0.2)]"
+            {/* Sub-tabs */}
+            <div className="flex border-b border-[var(--color-border)] my-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setWaTab("simulator")}
+                className={`pb-2 text-xs font-semibold px-2 border-b-2 transition-colors ${
+                  waTab === "simulator"
+                    ? "border-[var(--color-primary)] text-[var(--color-primary)]"
+                    : "border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
                 }`}
               >
-                {waResult.success ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-                <span>{waResult.message}</span>
+                💬 Simulator Bot 2-Way (Inbound)
+              </button>
+              <button
+                type="button"
+                onClick={() => setWaTab("outbound")}
+                className={`pb-2 text-xs font-semibold px-2 border-b-2 transition-colors ${
+                  waTab === "outbound"
+                    ? "border-[var(--color-primary)] text-[var(--color-primary)]"
+                    : "border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
+                }`}
+              >
+                🚀 Uji Kirim Keluar (Outbound)
+              </button>
+            </div>
+
+            {waTab === "simulator" ? (
+              <div className="flex-1 flex flex-col min-h-0 space-y-3">
+                {/* Webhook Endpoint Banner */}
+                <div className="p-2.5 rounded-lg bg-[var(--color-bg-subtle)] border border-[var(--color-border)] flex items-center justify-between text-xs">
+                  <div className="truncate">
+                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider block">
+                      Endpoint Webhook Fonnte / Wablas:
+                    </span>
+                    <code className="text-[11px] font-mono text-[var(--color-navy)] font-semibold select-all">
+                      /api/whatsapp/webhook
+                    </code>
+                  </div>
+                  <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium ml-2">
+                    Aktif
+                  </span>
+                </div>
+
+                {/* Chat Messages Window */}
+                <div className="flex-1 overflow-y-auto space-y-2.5 p-3 rounded-xl bg-[#f0f4f8] border border-[var(--color-border)] max-h-[300px] min-h-[200px]">
+                  {simMessages.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex flex-col ${
+                        msg.sender === "user" ? "items-end" : "items-start"
+                      }`}
+                    >
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-xs whitespace-pre-wrap leading-relaxed shadow-sm ${
+                          msg.sender === "user"
+                            ? "bg-[#d9fdd3] text-[#111b21] rounded-tr-none font-medium"
+                            : "bg-[#ffffff] text-[#111b21] rounded-tl-none border border-slate-200"
+                        }`}
+                      >
+                        {msg.text}
+                      </div>
+                      <span className="text-[9px] text-[var(--color-text-muted)] mt-0.5 px-1">
+                        {msg.time}
+                      </span>
+                    </div>
+                  ))}
+                  {simLoading && (
+                    <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)] bg-white px-3 py-1.5 rounded-full w-fit shadow-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] animate-ping" />
+                      <span>Bot sedang memproses transaksi...</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Quick Prompts Chips */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]">
+                  <span className="text-[10px] text-[var(--color-text-muted)] shrink-0 font-medium">
+                    Coba:
+                  </span>
+                  {[
+                    "Makan siang soto 35rb bayar bca",
+                    "saldo",
+                    "ringkasan",
+                    "anggaran",
+                    "menu",
+                  ].map((quickText) => (
+                    <button
+                      key={quickText}
+                      type="button"
+                      disabled={simLoading}
+                      onClick={() => handleSendSimulator(quickText)}
+                      className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 shrink-0 text-[10px] font-medium border border-slate-200 transition-colors"
+                    >
+                      {quickText}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Chat Input Form */}
+                <div className="flex gap-2 pt-1">
+                  <input
+                    type="text"
+                    placeholder="Ketik transaksi atau perintah (contoh: Beli bensin 50rb bayar cash)..."
+                    value={simInput}
+                    disabled={simLoading}
+                    onChange={(e) => setSimInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendSimulator();
+                      }
+                    }}
+                    className="form-input text-xs flex-1"
+                  />
+                  <button
+                    type="button"
+                    disabled={simLoading || !simInput.trim()}
+                    onClick={() => handleSendSimulator()}
+                    className="btn btn-primary text-xs px-4"
+                  >
+                    <Send size={13} />
+                    <span>Kirim</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                {waResult && (
+                  <div
+                    className={`p-3 rounded-lg text-xs flex items-center gap-2 mb-4 ${
+                      waResult.success
+                        ? "bg-[rgba(39,174,96,0.1)] text-[#27ae60] border border-[rgba(39,174,96,0.2)]"
+                        : "bg-[rgba(198,34,52,0.1)] text-[var(--color-accent-red)] border border-[rgba(198,34,52,0.2)]"
+                    }`}
+                  >
+                    {waResult.success ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                    <span>{waResult.message}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleSendTestWa} className="space-y-4">
+                  <div>
+                    <label className="form-label">Nomor WhatsApp Tujuan</label>
+                    <input
+                      type="tel"
+                      placeholder="081234567890"
+                      value={testPhone}
+                      onChange={(e) => setTestPhone(e.target.value)}
+                      className="form-input text-xs"
+                      required
+                    />
+                    <p className="text-[10px] text-[var(--color-text-secondary)] mt-1">
+                      Format Indonesia (contoh: 081234567890 atau 6281234567890)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="form-label">Pesan Uji Coba (Opsional)</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Ketik pesan kustom atau biarkan kosong untuk pesan salam default..."
+                      value={testMessage}
+                      onChange={(e) => setTestMessage(e.target.value)}
+                      className="form-input text-xs"
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setWaModalOpen(false)}
+                      className="btn btn-secondary text-xs"
+                    >
+                      Tutup
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={sendingWa}
+                      className="btn btn-primary text-xs"
+                    >
+                      <Send size={13} />
+                      <span>{sendingWa ? "Mengirim..." : "Kirim Sekarang"}</span>
+                    </button>
+                  </div>
+                </form>
               </div>
             )}
-
-            <form onSubmit={handleSendTestWa} className="space-y-4">
-              <div>
-                <label className="form-label">Nomor WhatsApp Tujuan</label>
-                <input
-                  type="tel"
-                  placeholder="081234567890"
-                  value={testPhone}
-                  onChange={(e) => setTestPhone(e.target.value)}
-                  className="form-input text-xs"
-                  required
-                />
-                <p className="text-[10px] text-[var(--color-text-secondary)] mt-1">
-                  Format Indonesia (contoh: 081234567890 atau 6281234567890)
-                </p>
-              </div>
-
-              <div>
-                <label className="form-label">Pesan Uji Coba (Opsional)</label>
-                <textarea
-                  rows={3}
-                  placeholder="Ketik pesan kustom atau biarkan kosong untuk pesan salam default..."
-                  value={testMessage}
-                  onChange={(e) => setTestMessage(e.target.value)}
-                  className="form-input text-xs"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setWaModalOpen(false)}
-                  className="btn btn-secondary text-xs"
-                >
-                  Tutup
-                </button>
-                <button
-                  type="submit"
-                  disabled={sendingWa}
-                  className="btn btn-primary text-xs"
-                >
-                  <Send size={13} />
-                  <span>{sendingWa ? "Mengirim..." : "Kirim Sekarang"}</span>
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
