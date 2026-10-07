@@ -239,6 +239,7 @@ export async function chatWithFinancialAssistant({
     accounts: string[];
     memoryContext?: string;
     liveMarketContext?: string;
+    crawledArticles?: Array<{ title: string; uri: string; source?: string; snippet?: string }>;
   };
 }): Promise<ChatAssistantResult> {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -259,11 +260,12 @@ Karakter: Sigap, cerdas, santun, objektif, berorientasi angka, dan siap membantu
 
 WAKTU & DATA REAL-TIME SAAT INI:
 - Tanggal Sekarang: ${currentDate} (WIB)
-- Anda memiliki akses langsung ke GOOGLE SEARCH GROUNDING dan data pasar interbank terkini.
-- PERATURAN KRITIS AKURASI DATA: Bila pengguna menanyakan kurs valuta asing (USD ke IDR, EUR, SGD, JPY, dll.), suku bunga (BI-Rate, Fed Rate), inflasi, harga emas, IHSG, atau berita ekonomi terkini:
-  1. WAJIB rujuk data real-time terkini (misal kurs e-Rate BCA, Bank Indonesia, Wise, Investing.com) yang Anda dapatkan melalui Google Search Grounding atau data pasar yang diberikan di bawah.
-  2. DILARANG KERAS mengarang, berhalusinasi, atau menggunakan angka historis lama (misal 16.140 atau 16.235).
-  3. Sebutkan secara eksplisit rincian kurs (misal kurs jual/beli BCA e-Rate atau kurs tengah spot) beserta tanggal/waktu rujukannya.
+- Anda memiliki akses langsung ke GOOGLE SEARCH GROUNDING dan HASIL LIVE CRAWLING DARI BANYAK SUMBER MEDIA INTERNET.
+- KEMAMPUAN MULTI-SOURCE CRAWLING & RISET INTERNET:
+  Bila pengguna menanyakan ekonomi, moneter, inflasi, suku bunga, kurs valuta asing (USD ke IDR dll), IHSG, saham, atau informasi berita ekonomi terkini:
+  1. Analisis dan sintesiskan informasi dari berbagai sumber internet terkini yang telah di-crawl di bawah dan dari Google Search Grounding.
+  2. Bandingkan dan sebutkan rujukan dari beberapa sumber media secara eksplisit dalam jawaban Anda (contoh: "Berdasarkan laporan dari beberapa sumber seperti Kompas, BBC, BCA, dan pasar spot interbank...").
+  3. DILARANG KERAS mengarang, berhalusinasi, atau menggunakan angka historis lama. Sajikan fakta real-time yang utuh dan komprehensif.
 ${workspaceContext.liveMarketContext || ""}
 
 KONTEKS FINANSIAL INTERNAL WORKSPACE SAAT INI:
@@ -317,9 +319,21 @@ Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringka
       const chunks = grounding?.groundingChunks || [];
       const sources: Array<{ title: string; uri: string }> = [];
 
+      // 1. Add multi-source crawled articles to sources list
+      if (workspaceContext.crawledArticles && workspaceContext.crawledArticles.length > 0) {
+        workspaceContext.crawledArticles.forEach((art) => {
+          if (!sources.some((s) => s.uri === art.uri || s.title === art.title)) {
+            sources.push({
+              title: art.title,
+              uri: art.uri,
+            });
+          }
+        });
+      }
+
+      // 2. Add citations from Google Search Grounding
       chunks.forEach((c: any) => {
         if (c.web?.title && c.web?.uri) {
-          // Avoid duplicate source links
           if (!sources.some((s) => s.uri === c.web.uri)) {
             sources.push({
               title: c.web.title,
@@ -329,15 +343,16 @@ Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringka
         }
       });
 
-      const isGrounded = sources.length > 0 || (grounding?.webSearchQueries && grounding.webSearchQueries.length > 0);
+      const hasGrounding = sources.length > 0 || (grounding?.webSearchQueries && grounding.webSearchQueries.length > 0);
 
       return {
         reply: text,
-        sources: sources.slice(0, 4),
-        isGrounded: !!isGrounded,
-        toolExecutedName: isGrounded
-          ? "Google Search Grounding & Live Market Data"
-          : "Gemini 2.5 Active Cognitive Reasoning",
+        sources: sources.slice(0, 8),
+        isGrounded: !!hasGrounding,
+        toolExecutedName:
+          sources.length > 0
+            ? "Multi-Source Web Crawler & Google Grounding"
+            : "Gemini 2.5 Active Cognitive Reasoning",
       };
     } catch (err) {
       console.warn("[GeminiChat] Gemini API error, falling back to contextual assistant:", err);

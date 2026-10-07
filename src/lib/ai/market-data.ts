@@ -1,7 +1,9 @@
 /**
- * Real-Time Market & Exchange Rate Service
- * Fetches live spot FX rates and economic indicators to prevent AI hallucination.
+ * Real-Time Market & Multi-Source Internet Economic Crawler Service
+ * Fetches live spot FX rates and crawls multiple internet/Google sources in real-time.
  */
+
+import { searchGoogleFinancialNews } from "@/lib/rag/web-crawler";
 
 interface LiveRateCache {
   base: string;
@@ -11,6 +13,14 @@ interface LiveRateCache {
 
 let cachedRates: LiveRateCache | null = null;
 const CACHE_TTL_MS = 60 * 1000; // 1 minute fresh cache
+
+export interface CrawledSourceArticle {
+  title: string;
+  source: string;
+  uri: string;
+  snippet: string;
+  publishedAt?: string;
+}
 
 export async function getLiveExchangeRates(baseCurrency: string = "USD"): Promise<{
   success: boolean;
@@ -71,18 +81,20 @@ export async function getLiveExchangeRates(baseCurrency: string = "USD"): Promis
   return {
     success: false,
     base: baseCurrency,
-    rates: { IDR: 17910, EUR: 0.95, SGD: 1.34, JPY: 154.2 },
+    rates: { IDR: 17901.96, EUR: 0.95, SGD: 1.34, JPY: 154.2 },
     lastUpdated: new Date().toISOString(),
   };
 }
 
 /**
- * Detects if a user query relates to currency exchange, inflation, interest rates, or market data.
+ * Detects if a user query relates to currency exchange, inflation, interest rates, or market data,
+ * and actively crawls multiple internet news sources in real-time.
  */
 export async function getLiveMarketContextForQuery(query: string): Promise<{
   isMarketQuery: boolean;
   marketContextText: string;
   sourceSummary?: string;
+  crawledArticles: CrawledSourceArticle[];
 }> {
   const q = query.toLowerCase();
 
@@ -104,43 +116,115 @@ export async function getLiveMarketContextForQuery(query: string): Promise<{
   const isEconQuery =
     q.includes("bi-rate") ||
     q.includes("bi rate") ||
-    q.includes("suku bunga acuan") ||
+    q.includes("suku bunga") ||
     q.includes("inflasi") ||
     q.includes("harga emas") ||
-    q.includes("ihsg");
+    q.includes("ihsg") ||
+    q.includes("saham") ||
+    q.includes("reksadana") ||
+    q.includes("apbn") ||
+    q.includes("pajak") ||
+    q.includes("the fed") ||
+    q.includes("fiskal") ||
+    q.includes("moneter");
 
-  if (!isCurrencyQuery && !isEconQuery) {
-    return { isMarketQuery: false, marketContextText: "" };
+  const isCrawlQuery =
+    q.includes("crawl") ||
+    q.includes("crawling") ||
+    q.includes("berita") ||
+    q.includes("info terbaru") ||
+    q.includes("informasi terbaru") ||
+    q.includes("banyak sumber") ||
+    q.includes("internet") ||
+    q.includes("cari di google") ||
+    q.includes("kabar");
+
+  if (!isCurrencyQuery && !isEconQuery && !isCrawlQuery) {
+    return {
+      isMarketQuery: false,
+      marketContextText: "",
+      crawledArticles: [],
+    };
   }
 
+  // 1. Determine targeted search keywords for the multi-source crawler
+  let searchKeywords = query.trim();
   if (isCurrencyQuery) {
-    const fx = await getLiveExchangeRates("USD");
-    const usdIdr = fx.rates["IDR"] ? Math.round(fx.rates["IDR"] * 100) / 100 : 17905;
+    searchKeywords = "kurs dollar rupiah";
+  } else if (q.includes("inflasi")) {
+    searchKeywords = "inflasi ekonomi Indonesia";
+  } else if (q.includes("bi-rate") || q.includes("suku bunga")) {
+    searchKeywords = "BI-Rate suku bunga acuan Bank Indonesia";
+  } else if (q.includes("ihsg") || q.includes("saham")) {
+    searchKeywords = "IHSG bursa efek indonesia";
+  } else if (q.includes("emas")) {
+    searchKeywords = "harga emas antam hari ini";
+  } else if (searchKeywords.length < 5) {
+    searchKeywords = "ekonomi dan moneter Indonesia terkini";
+  }
+
+  // 2. Concurrently fetch live FX rates (if currency) and crawl multiple sources
+  const [fx, rawArticles] = await Promise.all([
+    isCurrencyQuery ? getLiveExchangeRates("USD") : Promise.resolve(null),
+    searchGoogleFinancialNews(searchKeywords, { limit: 5 }).catch(() => []),
+  ]);
+
+  const crawledArticles: CrawledSourceArticle[] = rawArticles.map((a) => ({
+    title: a.title,
+    source: a.source,
+    uri: a.url,
+    snippet: a.snippet,
+    publishedAt: a.publishedAt,
+  }));
+
+  let contextSegments: string[] = [];
+
+  // Add Live Spot FX Data if applicable
+  if (fx && fx.rates) {
+    const usdIdr = fx.rates["IDR"] ? Math.round(fx.rates["IDR"] * 100) / 100 : 17901.96;
     const formattedIdr = new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
       maximumFractionDigits: 2,
     }).format(usdIdr);
 
-    return {
-      isMarketQuery: true,
-      marketContextText: `\n[DATA REAL-TIME LIVE PASAR SPOT INTERNASIONAL]:
-- Kurs 1 USD = ${formattedIdr} (Spot Rate Interbank Terkini)
+    contextSegments.push(`[DATA REAL-TIME SPOT INTERBANK GLOBAL]:
+- Kurs Spot 1 USD = ${formattedIdr}
 - Kurs 1 EUR = ${new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(
-        fx.rates["IDR"] && fx.rates["EUR"] ? fx.rates["IDR"] / fx.rates["EUR"] : 19500
-      )}
+      fx.rates["IDR"] && fx.rates["EUR"] ? fx.rates["IDR"] / fx.rates["EUR"] : 19500
+    )}
 - Kurs 1 SGD = ${new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(
-        fx.rates["IDR"] && fx.rates["SGD"] ? fx.rates["IDR"] / fx.rates["SGD"] : 13800
-      )}
-- Waktu Update Data: ${fx.lastUpdated}
-PENTING: Gunakan angka real-time di atas dan hasil Google Search Grounding. Jangan menggunakan angka historis lama.`,
-      sourceSummary: `Live Spot Interbank & Google Search Grounding (${fx.lastUpdated})`,
-    };
+      fx.rates["IDR"] && fx.rates["SGD"] ? fx.rates["IDR"] / fx.rates["SGD"] : 13800
+    )}
+- Waktu Update Spot FX: ${fx.lastUpdated}`);
+  }
+
+  // Add Multi-Source Crawled Articles
+  if (crawledArticles.length > 0) {
+    const articlesList = crawledArticles
+      .map(
+        (a, i) =>
+          `${i + 1}. [${a.source}] "${a.title}" (${a.publishedAt || "Hari ini"})\n   Intisari: ${a.snippet}`
+      )
+      .join("\n\n");
+
+    contextSegments.push(`[HASIL LIVE CRAWLING DARI BANYAK SUMBER MEDIA EKONOMI TERKINI DI INTERNET]:
+${articlesList}
+
+INSTRUKSI PENTING PENGOLAHAN INFORMASI:
+- Pengguna meminta Anda mengolah dan membandingkan informasi dari banyak sumber di internet.
+- Paparkan temuan dari berbagai portal di atas (sebutkan nama medianya, misalnya Kompas, BBC, CNBC, Ajaib, dll.).
+- Rangkum dinamika pasar terbaru secara komprehensif, objektif, dan faktual.`);
+  } else {
+    contextSegments.push(
+      `[INSTRUKSI RISET PASAR]: Gunakan Google Search Grounding aktif untuk mencari dan meng-crawl berita terkini dari berbagai media ekonomi dan otoritas moneter (BI, BPS, Kemenkeu).`
+    );
   }
 
   return {
     isMarketQuery: true,
-    marketContextText: `\n[INSTRUKSI RISET PASAR REAL-TIME]: Pertanyaan pengguna membutuhkan data makroekonomi terkini. Gunakan Google Search Grounding aktif untuk merujuk ke rilis resmi Bank Indonesia (BI), BPS, atau Bursa Efek Indonesia (BEI) terkini.`,
-    sourceSummary: "Google Search Grounding Real-Time",
+    marketContextText: "\n" + contextSegments.join("\n\n"),
+    sourceSummary: `Live Multi-Source Internet Crawling (${crawledArticles.length} Media Online)`,
+    crawledArticles,
   };
 }

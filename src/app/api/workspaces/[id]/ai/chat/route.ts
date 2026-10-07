@@ -113,6 +113,7 @@ export async function POST(req: Request, { params }: RouteParams) {
         accounts: accounts.map((a) => a.name),
         memoryContext: synthesized.synthesizedPromptContext,
         liveMarketContext: marketContext.marketContextText,
+        crawledArticles: marketContext.crawledArticles,
       },
     });
 
