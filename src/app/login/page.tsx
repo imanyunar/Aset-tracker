@@ -49,28 +49,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoLogin = async () => {
-    setError(null);
-    setLoading(true);
-    try {
-      const res = await signIn.email({
-        email: "demo@nexafinance.com",
-        password: "password123",
-      });
-
-      if (res?.error) {
-        setError("Gagal login akun demo: " + res.error.message);
-      } else {
-        router.push("/dashboard");
-        router.refresh();
-      }
-    } catch {
-      setError("Gagal melakukan login demo.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#ffffff] flex flex-col justify-center items-center p-5 animate-fade-in">
       <div className="w-full max-w-[440px] p-8 border border-[var(--color-border)] rounded-[var(--radius-card)] shadow-[var(--shadow-mid)] hover:shadow-[var(--shadow-high)] transition-all duration-300 bg-[#ffffff] animate-scale-in">
@@ -128,23 +106,6 @@ export default function LoginPage() {
             {!loading && <ArrowRight size={16} />}
           </button>
         </form>
-
-        <div className="my-6 relative text-center">
-          <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-[var(--color-border)]" />
-          <span className="relative bg-[#ffffff] px-3 text-xs text-[var(--color-text-secondary)] font-semibold">
-            ATAU UJI COBA CEPAT
-          </span>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleDemoLogin}
-          className="btn btn-secondary w-full border-[var(--color-primary)] text-[var(--color-primary)] bg-[rgba(24,122,186,0.04)] hover:bg-[rgba(24,122,186,0.08)]"
-          disabled={loading}
-        >
-          <ShieldCheck size={16} />
-          <span>Login Akun Demo Alex (1-Klik)</span>
-        </button>
 
         <div className="text-center mt-6 text-sm text-[var(--color-text-secondary)]">
           Belum memiliki akun?{" "}

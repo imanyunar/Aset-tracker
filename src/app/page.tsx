@@ -60,7 +60,7 @@ export default function HomePage() {
             className="btn btn-primary text-base !py-3.5 !px-8 w-full sm:w-auto shadow-[0_4px_16px_rgba(24,122,186,0.25)] hover:shadow-[0_8px_24px_rgba(24,122,186,0.35)]"
           >
             <ShieldCheck size={18} />
-            <span>Coba Akun Demo Alex (1-Klik)</span>
+            <span>Masuk ke Portal Keuangan</span>
           </Link>
           <Link
             href="/register"
