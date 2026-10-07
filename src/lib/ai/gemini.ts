@@ -239,8 +239,8 @@ export async function chatWithFinancialAssistant({
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-      const systemInstruction = `Anda adalah NexaAI, konsultan perencana keuangan pribadi dan bisnis profesional kelas dunia dengan standar presisi Morgan Stanley.
-Karakter: Lugas, santun, objektif, berorientasi angka, dan memberikan saran praktis yang dapat dieksekusi segera.
+      const systemInstruction = `Anda adalah Nexa AI Agent, asisten finansial cerdas dan autonomous agent untuk workspace "${workspaceContext.workspaceName}" milik Mas Iman Azizi.
+Karakter: Sigap, cerdas, santun, objektif, berorientasi angka, dan siap membantu pencatatan transaksi otomatis, audit kas, dan analisis keuangan real-time.
 
 KONTEKS FINANSIAL SAAT INI:
 - Workspace: ${workspaceContext.workspaceName} (${workspaceContext.workspaceType})
@@ -249,7 +249,7 @@ KONTEKS FINANSIAL SAAT INI:
 - Pengeluaran Bulan Ini: ${formatRupiah(workspaceContext.monthlyExpense)}
 - Rekening Aktif: ${workspaceContext.accounts.join(", ")}
 
-Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format rapi dan poin yang jelas.`;
+Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringkas, dan actionable. Bila pengguna meminta aksi, berikan instruksi dan konfirmasi yang jelas.`;
 
       const formattedHistory = messages.slice(0, -1).map((m) => ({
         role: m.role === "assistant" ? "model" : "user",
@@ -261,7 +261,7 @@ Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format rapi dan poin yan
       const chat = model.startChat({
         history: [
           { role: "user", parts: [{ text: systemInstruction }] },
-          { role: "model", parts: [{ text: "Siap, saya memahami seluruh konteks finansial workspace Anda. Ada yang bisa saya bantu?" }] },
+          { role: "model", parts: [{ text: "Siap, saya memahami seluruh konteks finansial workspace Anda. Saya siap bertindak sebagai agent dan asisten keuangan Anda. Ada yang bisa saya bantu?" }] },
           ...formattedHistory,
         ],
       });
@@ -279,5 +279,5 @@ Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format rapi dan poin yan
     return `Berdasarkan data keuangan di **${workspaceContext.workspaceName}**, total saldo likuiditas Anda saat ini adalah **${formatRupiah(workspaceContext.totalBalance)}**.\n\nRekomendasi alokasi 50/30/20 untuk pemasukan bulan ini (${formatRupiah(workspaceContext.monthlyIncome)}):\n- **50% Kebutuhan Pokok**: Maksimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.5))}\n- **30% Keinginan**: Maksimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.3))}\n- **20% Tabungan/Investasi**: Minimal ${formatRupiah(Math.round(workspaceContext.monthlyIncome * 0.2))}\n\nPastikan pengeluaran harian tidak melampaui batas pagu kategori yang telah ditentukan.`;
   }
 
-  return `Halo! Saya NexaAI, asisten finansial Anda di **${workspaceContext.workspaceName}**.\n\nRingkasan keuangan Anda saat ini:\n- **Total Likuiditas**: ${formatRupiah(workspaceContext.totalBalance)}\n- **Pemasukan Bulan Ini**: ${formatRupiah(workspaceContext.monthlyIncome)}\n- **Pengeluaran Bulan Ini**: ${formatRupiah(workspaceContext.monthlyExpense)}\n- **Arus Kas Bersih**: ${formatRupiah(workspaceContext.monthlyIncome - workspaceContext.monthlyExpense)}\n\nKondisi arus kas Anda saat ini cukup sehat. Apakah ada pos pengeluaran tertentu yang ingin kita analisis bersama?`;
+  return `Halo Mas Iman Azizi! Saya Nexa AI Agent, asisten dan autonomous financial agent Anda di **${workspaceContext.workspaceName}**.\n\nRingkasan keuangan Anda saat ini:\n- **Total Likuiditas**: ${formatRupiah(workspaceContext.totalBalance)}\n- **Pemasukan Bulan Ini**: ${formatRupiah(workspaceContext.monthlyIncome)}\n- **Pengeluaran Bulan Ini**: ${formatRupiah(workspaceContext.monthlyExpense)}\n- **Arus Kas Bersih**: ${formatRupiah(workspaceContext.monthlyIncome - workspaceContext.monthlyExpense)}\n\nSaya dapat mencatat transaksi otomatis untuk Anda (misal: "Catat makan siang 35rb pakai BCA"), memeriksa saldo seluruh rekening, atau menganalisis arus kas. Silakan beri perintah!`;
 }
