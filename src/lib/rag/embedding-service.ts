@@ -87,34 +87,53 @@ export async function searchSimilarChunks(
   categoryFilter?: string
 ): Promise<SimilarChunkResult[]> {
   try {
-    const vectorStr = `[${queryEmbedding.join(",")}]`;
-    let query: string;
+    // 1. Sanitize topK
+    const safeLimit = Math.max(1, Math.min(20, Math.floor(Number(topK) || 5)));
 
-    if (categoryFilter) {
-      query = `
+    // 2. Validate vector embedding array
+    if (!Array.isArray(queryEmbedding) || queryEmbedding.length === 0 || !queryEmbedding.every(Number.isFinite)) {
+      console.warn("[EmbeddingService] Invalid query embedding vector provided");
+      return [];
+    }
+    const vectorStr = `[${queryEmbedding.join(",")}]`;
+
+    // 3. Whitelist category filter to eliminate SQL injection
+    const ALLOWED_CATEGORIES = new Set([
+      "FINANCIAL_CONSULTANT",
+      "INVESTMENT_BANKING",
+      "ASSET_MANAGEMENT",
+      "AUDITOR",
+    ]);
+
+    const sanitizedCategory = categoryFilter && ALLOWED_CATEGORIES.has(categoryFilter)
+      ? categoryFilter
+      : null;
+
+    let rows: any[];
+    if (sanitizedCategory) {
+      rows = (await prisma.$queryRaw`
         SELECT dc.id, dc."documentId", dc."chunkIndex", dc.content,
                kd.title, kd.authors, kd.year, kd.journal, kd.doi, kd.url, kd.category, kd.scope,
-               (1 - (dc.embedding <=> '${vectorStr}'::vector)) as similarity
+               (1 - (dc.embedding <=> ${vectorStr}::vector)) as similarity
         FROM document_chunks dc
         JOIN knowledge_documents kd ON dc."documentId" = kd.id
-        WHERE dc.embedding IS NOT NULL AND kd.category = '${categoryFilter}'
-        ORDER BY dc.embedding <=> '${vectorStr}'::vector ASC
-        LIMIT ${topK};
-      `;
+        WHERE dc.embedding IS NOT NULL AND kd.category = ${sanitizedCategory}
+        ORDER BY dc.embedding <=> ${vectorStr}::vector ASC
+        LIMIT ${safeLimit};
+      `) as any[];
     } else {
-      query = `
+      rows = (await prisma.$queryRaw`
         SELECT dc.id, dc."documentId", dc."chunkIndex", dc.content,
                kd.title, kd.authors, kd.year, kd.journal, kd.doi, kd.url, kd.category, kd.scope,
-               (1 - (dc.embedding <=> '${vectorStr}'::vector)) as similarity
+               (1 - (dc.embedding <=> ${vectorStr}::vector)) as similarity
         FROM document_chunks dc
         JOIN knowledge_documents kd ON dc."documentId" = kd.id
         WHERE dc.embedding IS NOT NULL
-        ORDER BY dc.embedding <=> '${vectorStr}'::vector ASC
-        LIMIT ${topK};
-      `;
+        ORDER BY dc.embedding <=> ${vectorStr}::vector ASC
+        LIMIT ${safeLimit};
+      `) as any[];
     }
 
-    const rows = (await prisma.$queryRawUnsafe(query)) as any[];
     return rows.map((r) => ({
       id: r.id,
       documentId: r.documentId,
@@ -146,14 +165,18 @@ export async function storeChunkWithEmbedding(
   content: string,
   embedding: number[]
 ) {
+  if (!Array.isArray(embedding) || embedding.length === 0 || !embedding.every(Number.isFinite)) {
+    throw new Error("Vector embedding tidak valid");
+  }
   const vectorStr = `[${embedding.join(",")}]`;
-  const escapedContent = content.replace(/'/g, "''");
 
-  await prisma.$executeRawUnsafe(`
+  // Safe parameterized insertion using PostgreSQL native parameter bindings
+  await prisma.$executeRaw`
     INSERT INTO document_chunks ("id", "documentId", "chunkIndex", "content", "embedding", "createdAt")
-    VALUES ('${chunkId}', '${documentId}', ${chunkIndex}, '${escapedContent}', '${vectorStr}'::vector, NOW())
+    VALUES (${chunkId}, ${documentId}, ${chunkIndex}, ${content}, ${vectorStr}::vector, NOW())
     ON CONFLICT (id) DO UPDATE SET
       content = EXCLUDED.content,
       embedding = EXCLUDED.embedding;
-  `);
+  `;
 }
+
