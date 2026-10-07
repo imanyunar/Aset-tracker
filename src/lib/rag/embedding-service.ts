@@ -111,6 +111,11 @@ export async function searchSimilarChunks(
       "ECONOMIC_NEWS",
       "WEB_SEARCH",
       "GLOBAL_ECONOMY",
+      "USER_PREFERENCE",
+      "FINANCIAL_RULE",
+      "FINANCIAL_GOAL",
+      "USER_HABIT",
+      "PERSONAL_CONTEXT",
     ]);
 
     const sanitizedCategory = categoryFilter && ALLOWED_CATEGORIES.has(categoryFilter)

@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { requireUser, requireWorkspaceAccess } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { chatWithFinancialAssistant } from "@/lib/ai/gemini";
+import {
+  getWorkspaceLearnedMemories,
+  synthesizeInformationContext,
+  detectAndExtractMemory,
+  saveLearnedMemory,
+} from "@/lib/ai/learning-engine";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { TransactionType } from "@prisma/client";
 import { z } from "zod";
@@ -21,7 +27,7 @@ interface RouteParams {
 
 export async function POST(req: Request, { params }: RouteParams) {
   try {
-    const rateLimitError = await enforceRateLimit(req, "ai-chat", 20, 60);
+    const rateLimitError = await enforceRateLimit(req, "ai-chat", 25, 60);
     if (rateLimitError) return rateLimitError;
 
     const user = await requireUser();
@@ -38,7 +44,10 @@ export async function POST(req: Request, { params }: RouteParams) {
       );
     }
 
-    // Prepare live financial context
+    const messages = parsed.data.messages;
+    const lastUserMessage = messages[messages.length - 1]?.content || "";
+
+    // 1. Prepare live financial context
     const accounts = await prisma.financialAccount.findMany({
       where: { workspaceId, isArchived: false },
       select: { name: true, balance: true },
@@ -71,19 +80,67 @@ export async function POST(req: Request, { params }: RouteParams) {
       }),
     ]);
 
+    const monthlyIncome = Number(incomeAgg._sum.amount || BigInt(0));
+    const monthlyExpense = Number(expenseAgg._sum.amount || BigInt(0));
+
+    // 2. Continuous Learning Retrieval & Information Processing
+    const learnedMemories = await getWorkspaceLearnedMemories(workspaceId);
+    const synthesized = synthesizeInformationContext({
+      workspaceName: workspace.name,
+      totalBalance,
+      monthlyIncome,
+      monthlyExpense,
+      accounts: accounts.map((a) => a.name),
+      learnedMemories,
+      userQuery: lastUserMessage,
+    });
+
+    // 3. Generate response with integrated intelligence
     const reply = await chatWithFinancialAssistant({
-      messages: parsed.data.messages,
+      messages,
       workspaceContext: {
         workspaceName: workspace.name,
         workspaceType: workspace.type,
         totalBalance,
-        monthlyIncome: Number(incomeAgg._sum.amount || BigInt(0)),
-        monthlyExpense: Number(expenseAgg._sum.amount || BigInt(0)),
+        monthlyIncome,
+        monthlyExpense,
         accounts: accounts.map((a) => a.name),
+        memoryContext: synthesized.synthesizedPromptContext,
       },
     });
 
-    return NextResponse.json({ success: true, reply });
+    // 4. Background Active Learning: Extract new facts or rules stated by user in this chat
+    let newlyLearnedMemory: any = null;
+    try {
+      const memoryDetection = await detectAndExtractMemory(lastUserMessage);
+      if (memoryDetection.hasMemory && memoryDetection.category && memoryDetection.fact) {
+        newlyLearnedMemory = await saveLearnedMemory(workspaceId, {
+          category: memoryDetection.category,
+          title: memoryDetection.title || "Preferensi Baru",
+          fact: memoryDetection.fact,
+          actionableRule: memoryDetection.actionableRule,
+          confidence: memoryDetection.confidence,
+        });
+      }
+    } catch (memErr) {
+      console.warn("[AiChat] Non-blocking memory extraction notice:", memErr);
+    }
+
+    return NextResponse.json({
+      success: true,
+      reply,
+      learnedMemory: newlyLearnedMemory
+        ? {
+            id: newlyLearnedMemory.id,
+            category: newlyLearnedMemory.category,
+            title: newlyLearnedMemory.title,
+            fact: newlyLearnedMemory.fact,
+            actionableRule: newlyLearnedMemory.actionableRule,
+          }
+        : null,
+      activeGoalsCount: synthesized.activeGoals.length,
+      activeRulesCount: synthesized.activeRules.length,
+    });
   } catch (error: any) {
     if (error.name === "UnauthorizedError") {
       return NextResponse.json({ error: error.message }, { status: 401 });

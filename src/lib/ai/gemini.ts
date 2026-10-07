@@ -230,6 +230,7 @@ export async function chatWithFinancialAssistant({
     monthlyIncome: number;
     monthlyExpense: number;
     accounts: string[];
+    memoryContext?: string;
   };
 }): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -248,8 +249,9 @@ KONTEKS FINANSIAL SAAT INI:
 - Pemasukan Bulan Ini: ${formatRupiah(workspaceContext.monthlyIncome)}
 - Pengeluaran Bulan Ini: ${formatRupiah(workspaceContext.monthlyExpense)}
 - Rekening Aktif: ${workspaceContext.accounts.join(", ")}
+${workspaceContext.memoryContext || ""}
 
-Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringkas, dan actionable. Bila pengguna meminta aksi, berikan instruksi dan konfirmasi yang jelas.`;
+Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringkas, dan actionable. Bila pengguna meminta aksi, berikan instruksi dan konfirmasi yang jelas. Jika pengguna mengajarkan aturan, preferensi, atau target baru, akui dan terapkan secara langsung dalam analisis Anda.`;
 
       const formattedHistory = messages.slice(0, -1).map((m) => ({
         role: m.role === "assistant" ? "model" : "user",
