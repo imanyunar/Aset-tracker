@@ -3,6 +3,7 @@ import { requireUser, requireWorkspaceAccess } from "@/lib/session";
 import { executeFinancialRag } from "@/lib/rag/rag-service";
 import { FinancialPersona } from "@/lib/rag/personas";
 import { seedAcademicKnowledgeBase } from "@/lib/rag/seed-knowledge";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 let isSeeded = false;
 
@@ -11,6 +12,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const rateLimitError = await enforceRateLimit(req, "rag-query", 20, 60);
+    if (rateLimitError) return rateLimitError;
+
     const user = await requireUser();
     const { id: workspaceId } = await params;
     await requireWorkspaceAccess(user.id, workspaceId);

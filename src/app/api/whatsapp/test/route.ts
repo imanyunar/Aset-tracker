@@ -1,17 +1,33 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/session";
 import { sendWhatsAppNotification, getWhatsAppDriver } from "@/lib/whatsapp";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    // 1. Rate limiting: max 5 test notifications per minute per user
+    const rateLimitError = await enforceRateLimit(req, "wa-test", 5, 60);
+    if (rateLimitError) return rateLimitError;
+
     const user = await requireUser();
     const body = await req.json().catch(() => ({}));
 
-    const targetNumber = body.to || user.whatsappNumber;
+    // 2. Security: Only allow sending to the authenticated user's registered phone number
+    const targetNumber = user.whatsappNumber;
     if (!targetNumber) {
       return NextResponse.json(
-        { error: "Nomor WhatsApp belum terdaftar di profil Anda." },
+        { error: "Nomor WhatsApp belum terdaftar di profil akun Anda." },
         { status: 400 }
+      );
+    }
+
+    if (body.to && body.to.replace(/\D/g, "") !== targetNumber.replace(/\D/g, "")) {
+      return NextResponse.json(
+        {
+          error:
+            "Demi keamanan, Anda hanya dapat mengirim notifikasi uji coba ke nomor WhatsApp Anda sendiri yang terdaftar.",
+        },
+        { status: 403 }
       );
     }
 

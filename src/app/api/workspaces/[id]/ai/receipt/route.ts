@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { requireUser, requireWorkspaceAccess } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { parseReceiptVision } from "@/lib/ai/gemini";
+import { enforceRateLimit } from "@/lib/rate-limit";
 import { z } from "zod";
 
 const receiptSchema = z.object({
-  imageBase64: z.string().min(10, "Data gambar struk tidak valid"),
+  imageBase64: z
+    .string()
+    .min(10, "Data gambar struk tidak valid")
+    .max(8 * 1024 * 1024, "Ukuran gambar melebihi batas maksimum 6MB"),
   mimeType: z.string().default("image/jpeg"),
 });
 
@@ -15,6 +19,9 @@ interface RouteParams {
 
 export async function POST(req: Request, { params }: RouteParams) {
   try {
+    const rateLimitError = await enforceRateLimit(req, "ai-receipt", 15, 60);
+    if (rateLimitError) return rateLimitError;
+
     const user = await requireUser();
     const { id: workspaceId } = await params;
 

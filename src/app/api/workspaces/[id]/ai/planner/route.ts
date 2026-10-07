@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireUser, requireWorkspaceAccess } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { generate503020FinancialPlan } from "@/lib/ai/gemini";
+import { enforceRateLimit } from "@/lib/rate-limit";
 import { TransactionType } from "@prisma/client";
 
 interface RouteParams {
@@ -10,6 +11,9 @@ interface RouteParams {
 
 export async function POST(req: Request, { params }: RouteParams) {
   try {
+    const rateLimitError = await enforceRateLimit(req, "ai-planner", 15, 60);
+    if (rateLimitError) return rateLimitError;
+
     const user = await requireUser();
     const { id: workspaceId } = await params;
 

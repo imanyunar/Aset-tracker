@@ -4,6 +4,7 @@ import {
   sendWhatsAppNotification,
   getWhatsAppDriver,
 } from "@/lib/whatsapp";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 // GET /api/whatsapp/webhook - Healthcheck & Webhook Verification
 export async function GET(req: NextRequest) {
@@ -13,13 +14,32 @@ export async function GET(req: NextRequest) {
     service: "NexaFinance 2-Way WhatsApp Interactive Bot",
     driver: driver.name,
     timestamp: new Date().toISOString(),
-    guide: "Kirim POST request dengan { sender, message } dari gateway Fonnte / Wablas.",
   });
 }
 
 // POST /api/whatsapp/webhook - Inbound Message Receiver
 export async function POST(req: NextRequest) {
   try {
+    // 1. Rate limiting: protect against spam / DoS
+    const rateLimitError = await enforceRateLimit(req, "wa-webhook", 60, 60);
+    if (rateLimitError) return rateLimitError;
+
+    // 2. Secret validation (if WHATSAPP_WEBHOOK_SECRET is configured)
+    const expectedSecret = process.env.WHATSAPP_WEBHOOK_SECRET;
+    if (expectedSecret) {
+      const providedSecret =
+        req.headers.get("x-webhook-secret") ||
+        req.headers.get("x-fonnte-token") ||
+        req.nextUrl.searchParams.get("secret");
+
+      if (providedSecret !== expectedSecret) {
+        return NextResponse.json(
+          { error: "Akses ditolak: Webhook secret tidak valid." },
+          { status: 401 }
+        );
+      }
+    }
+
     let sender = "";
     let message = "";
     let senderName = "";
@@ -60,6 +80,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Input sanitization & validation
+    sender = (sender || "").replace(/[^0-9+]/g, "").trim();
+    message = (message || "").trim();
+
     if (!sender || !message) {
       return NextResponse.json(
         {
@@ -69,7 +93,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Process the message through our intelligent bot handler
+    if (sender.length < 8 || sender.length > 20) {
+      return NextResponse.json(
+        { error: "Format nomor telepon tidak valid." },
+        { status: 400 }
+      );
+    }
+
+    if (message.length > 1000) {
+      return NextResponse.json(
+        { error: "Pesan melebihi batas maksimum 1000 karakter." },
+        { status: 400 }
+      );
+    }
+
+    // 3. Process the message through our intelligent bot handler
     const botResult = await processInboundWhatsAppMessage({
       sender,
       message,
@@ -77,7 +115,7 @@ export async function POST(req: NextRequest) {
       source: "webhook",
     });
 
-    // 2. Dispatch the reply message back to the sender via WhatsApp Gateway
+    // 4. Dispatch the reply message back to the sender via WhatsApp Gateway
     const sendResult = await sendWhatsAppNotification(sender, botResult.reply);
 
     return NextResponse.json({
@@ -92,7 +130,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("[WhatsAppWebhook Error]:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: "Terjadi kesalahan internal saat memproses webhook." },
       { status: 500 }
     );
   }
