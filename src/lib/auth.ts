@@ -2,11 +2,13 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 import { initializeUserDefaultWorkspace } from "@/lib/workspace-init";
+import { bearer } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  plugins: [bearer()],
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -19,6 +21,12 @@ export const auth = betterAuth({
     "https://frontend-nine-ruby-17.vercel.app",
     "https://*.vercel.app",
   ],
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+    },
+  },
   user: {
     additionalFields: {
       whatsappNumber: {
