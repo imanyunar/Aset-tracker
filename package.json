@@ -11,6 +11,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "dev:vue": "npm run dev --prefix frontend",
+    "build:vue": "npm run build --prefix frontend",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed"
   },
