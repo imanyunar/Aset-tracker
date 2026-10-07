@@ -1,0 +1,12 @@
+# NexaFinance Institutional Security Policy
+# Disallow all indexing and crawling across API and private endpoints to eliminate Google Dorking
+
+User-agent: *
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /transactions/
+Disallow: /accounts/
+Disallow: /budgets/
+Disallow: /ai/
+Disallow: /login/
+Disallow: /register/
