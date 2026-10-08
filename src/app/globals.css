@@ -2,39 +2,40 @@
 
 @layer base {
   :root {
-    --color-bg: #ffffff;
-    --color-bg-subtle: #f8fafd;
+    --color-bg: #faf8ff;
+    --color-bg-subtle: #faf8ff;
     --color-bg-card: #ffffff;
-    --color-surface-hover: #f3f7fa;
+    --color-surface-hover: #f2f3ff;
 
-    --color-primary: #187aba;
-    --color-primary-hover: #14669c;
-    --color-secondary: #1876b5;
-    --color-navy: #003061;
-    --color-accent-blue: #3860be;
-    --color-accent-red: #c62234;
-    --color-accent-green: #10874e;
-    --color-accent-gold: #b37400;
+    --color-primary: #006948;
+    --color-primary-hover: #00855d;
+    --color-secondary: #4b41e1;
+    --color-navy: #0b0f19;
+    --color-whatsapp: #25d366;
+    --color-accent-blue: #4b41e1;
+    --color-accent-red: #ba1a1a;
+    --color-accent-green: #16a34a;
+    --color-accent-gold: #d97706;
 
-    --color-text: #000000;
-    --color-text-secondary: #666666;
-    --color-text-muted: #888888;
-    --color-border: #f2f2f2;
-    --color-border-dark: #e1e1e1;
-    --color-border-focus: #187aba;
+    --color-text: #171b26;
+    --color-text-secondary: #3d4a42;
+    --color-text-muted: #6d7a72;
+    --color-border: #e2e8f0;
+    --color-border-dark: #cbd5e1;
+    --color-border-focus: #006948;
 
-    --radius-subtle: 2px;
-    --radius-button: 10px;
-    --radius-card: 20px;
+    --radius-subtle: 4px;
+    --radius-button: 8px;
+    --radius-card: 12px;
 
-    --shadow-low: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --shadow-mid: 0 4px 18px rgba(0, 0, 0, 0.08);
-    --shadow-high: rgba(0, 0, 0, 0.18) 0px 10px 30px 0px;
-    --shadow-accent-card: rgb(15, 142, 199) 6px 0px 0px 0px inset, 0 4px 16px rgba(0, 0, 0, 0.04);
-    --shadow-dropdown: rgb(153, 153, 153) 0px 4px 14px -3px;
+    --shadow-low: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+    --shadow-mid: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+    --shadow-high: 0 20px 25px -5px rgba(15, 23, 42, 0.12);
+    --shadow-accent-card: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
+    --shadow-dropdown: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
 
     --font-heading: 'Plus Jakarta Sans', sans-serif;
-    --font-body: 'Karla', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
   }
 
   body {

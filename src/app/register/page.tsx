@@ -92,7 +92,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-[480px] p-8 border border-[var(--color-border)] rounded-[var(--radius-card)] shadow-[var(--shadow-mid)] hover:shadow-[var(--shadow-high)] transition-all duration-300 bg-[#ffffff] animate-scale-in">
         {/* Brand Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-[var(--color-primary)] rounded-xl inline-flex items-center justify-center text-white font-extrabold text-2xl mb-3 shadow-[0_4px_14px_rgba(24,122,186,0.3)] animate-float">
+          <div className="w-12 h-12 bg-[var(--color-primary)] rounded-xl inline-flex items-center justify-center text-white font-extrabold text-2xl mb-3 shadow-[0_4px_14px_rgba(0,105,72,0.3)] animate-float">
             N
           </div>
           <h1 className="text-2xl text-[var(--color-navy)] tracking-tight">
@@ -199,7 +199,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Benefits summary */}
-          <div className="p-3 bg-[rgba(24,122,186,0.04)] border border-[rgba(24,122,186,0.15)] rounded-lg text-xs text-[var(--color-text-secondary)] space-y-1.5">
+          <div className="p-3 bg-[rgba(0,105,72,0.04)] border border-[rgba(0,105,72,0.15)] rounded-lg text-xs text-[var(--color-text-secondary)] space-y-1.5">
             <div className="flex items-center gap-1.5 font-semibold text-[var(--color-primary)]">
               <CheckCircle2 size={14} /> Otomatisasi pendaftaran:
             </div>

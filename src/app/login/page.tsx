@@ -128,27 +128,22 @@ export default function LoginPage() {
       {/* ============================================================ */}
       {/* SEBELAH KIRI (DESKTOP) / HEADER COMPACT (MOBILE): Showcase    */}
       {/* ============================================================ */}
-      <div className="relative bg-gradient-to-br from-[#001428] via-[#002244] to-[#003666] flex flex-col justify-between p-4 sm:p-6 lg:p-14 text-white overflow-hidden lg:flex-1 shrink-0 shadow-md lg:shadow-none">
+      <div className="relative bg-gradient-to-br from-[#002114] via-[#003824] to-[#005137] flex flex-col justify-between p-4 sm:p-6 lg:p-14 text-white overflow-hidden lg:flex-1 shrink-0 shadow-md lg:shadow-none">
         {/* Ambient Lights */}
-        <div className="absolute -top-24 -left-24 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.18)_0%,rgba(0,92,170,0)_70%)] pointer-events-none z-[1]" />
-        <div className="absolute -bottom-24 -right-24 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-[radial-gradient(circle,rgba(0,92,170,0.25)_0%,rgba(0,20,40,0)_70%)] pointer-events-none z-[1]" />
+        <div className="absolute -top-24 -left-24 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-[radial-gradient(circle,rgba(104,219,169,0.18)_0%,rgba(0,105,72,0)_70%)] pointer-events-none z-[1]" />
+        <div className="absolute -bottom-24 -right-24 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-[radial-gradient(circle,rgba(0,105,72,0.25)_0%,rgba(0,33,20,0)_70%)] pointer-events-none z-[1]" />
 
         {/* Top Header */}
         <div className="flex items-center justify-between relative z-[2] gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#005caa] to-[#0284c7] flex items-center justify-center shadow-[0_4px_12px_rgba(56,189,248,0.25)] border border-[rgba(56,189,248,0.35)] shrink-0">
-              <svg width="22" height="22" viewBox="0 0 128 128" fill="none">
-                <path d="M34 32 H48 V96 H34 Z" fill="#ffffff" />
-                <path d="M80 32 H94 V96 H80 Z" fill="#ffffff" />
-                <path d="M42 32 L86 96 H72 L34 40 Z" fill="#7dd3fc" />
-                <circle cx="87" cy="34" r="5" fill="#38bdf8" />
-              </svg>
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#006948] flex items-center justify-center text-white font-bold text-lg shadow-[0_4px_12px_rgba(0,105,72,0.25)] border border-[rgba(104,219,169,0.35)] shrink-0">
+              N
             </div>
             <div>
               <div className="text-base sm:text-xl font-extrabold tracking-tight font-heading">
-                Nexa<span className="text-[#38bdf8]">Finance</span>
+                Nexa<span className="text-[#68dba9]">Finance</span>
               </div>
-              <div className="text-[10px] sm:text-[11px] text-[#94a3b8] tracking-wider uppercase font-semibold">
+              <div className="text-[10px] sm:text-[11px] text-[#a7d9c2] tracking-wider uppercase font-semibold">
                 Manajemen Kas & Treasury
               </div>
             </div>
@@ -162,7 +157,7 @@ export default function LoginPage() {
               isTransitioning ? "opacity-0 translate-y-2.5" : "opacity-100 translate-y-0"
             }`}
           >
-            <div className="inline-block px-2.5 py-0.5 sm:px-3 sm:py-1 rounded bg-[rgba(56,189,248,0.15)] text-[#7dd3fc] text-[10px] sm:text-[11px] font-bold tracking-wider mb-3 sm:mb-4 border border-[rgba(56,189,248,0.3)]">
+            <div className="inline-block px-2.5 py-0.5 sm:px-3 sm:py-1 rounded bg-[rgba(104,219,169,0.15)] text-[#68dba9] text-[10px] sm:text-[11px] font-bold tracking-wider mb-3 sm:mb-4 border border-[rgba(104,219,169,0.3)]">
               {slide.badge}
             </div>
 
@@ -170,25 +165,25 @@ export default function LoginPage() {
               {slide.title}
             </h2>
 
-            <p className="text-xs sm:text-sm lg:text-base leading-relaxed text-[#cbd5e1] mb-5 sm:mb-6 max-w-lg">
+            <p className="text-xs sm:text-sm lg:text-base leading-relaxed text-[#d7d9e8] mb-5 sm:mb-6 max-w-lg">
               {slide.description}
             </p>
 
             <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[rgba(0,20,40,0.65)] border border-[rgba(56,189,248,0.25)] backdrop-blur shadow-[0_4px_16px_rgba(0,0,0,0.2)]">
-                <div className="text-lg sm:text-2xl font-extrabold text-[#38bdf8] font-heading">
+              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[rgba(0,33,20,0.65)] border border-[rgba(104,219,169,0.25)] backdrop-blur shadow-[0_4px_16px_rgba(0,0,0,0.2)]">
+                <div className="text-lg sm:text-2xl font-extrabold text-[#68dba9] font-heading">
                   {slide.metric}
                 </div>
-                <div className="text-[10px] sm:text-[11px] text-[#94a3b8] mt-0.5 font-semibold">
+                <div className="text-[10px] sm:text-[11px] text-[#a7d9c2] mt-0.5 font-semibold">
                   {slide.metricLabel}
                 </div>
               </div>
 
-              <div className="hidden sm:block p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[rgba(0,20,40,0.65)] border border-[rgba(255,255,255,0.1)] backdrop-blur">
+              <div className="hidden sm:block p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[rgba(0,33,20,0.65)] border border-[rgba(255,255,255,0.1)] backdrop-blur">
                 <div className="text-xs font-bold text-white">
                   {slide.tag}
                 </div>
-                <div className="text-[10px] sm:text-[11px] text-[#64748b] mt-0.5">
+                <div className="text-[10px] sm:text-[11px] text-[#a7d9c2] mt-0.5">
                   Sistem Terintegrasi
                 </div>
               </div>
@@ -204,7 +199,7 @@ export default function LoginPage() {
                 onClick={() => handleSelectSlide(idx)}
                 title={`Buka ringkasan ${idx + 1}`}
                 className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-                  currentSlide === idx ? "w-7 sm:w-8 bg-[#38bdf8]" : "w-2 bg-white/25 hover:bg-white/40"
+                  currentSlide === idx ? "w-7 sm:w-8 bg-[#68dba9]" : "w-2 bg-white/25 hover:bg-white/40"
                 }`}
               />
             ))}
@@ -213,7 +208,7 @@ export default function LoginPage() {
 
         {/* Mobile Compact Headline Bar */}
         <div className="lg:hidden relative z-[2] mt-2 pt-2 border-t border-white/10 flex items-center gap-2">
-          <span className="px-2 py-0.5 rounded bg-[rgba(56,189,248,0.18)] text-[#7dd3fc] text-[9.5px] font-bold shrink-0">
+          <span className="px-2 py-0.5 rounded bg-[rgba(104,219,169,0.18)] text-[#68dba9] text-[9.5px] font-bold shrink-0">
             {slide.badge}
           </span>
           <span className="text-xs text-[#e2e8f0] font-semibold truncate">
@@ -222,9 +217,9 @@ export default function LoginPage() {
         </div>
 
         {/* Bottom Proof Strip */}
-        <div className="hidden lg:flex relative z-[2] border-t border-white/10 pt-4 items-center justify-between text-xs text-[#94a3b8]">
+        <div className="hidden lg:flex relative z-[2] border-t border-white/10 pt-4 items-center justify-between text-xs text-[#a7d9c2]">
           <div className="flex items-center gap-2">
-            <Lock size={15} className="text-[#38bdf8]" />
+            <Lock size={15} className="text-[#68dba9]" />
             <span>Koneksi Aman Terenkripsi SSL/TLS 256-bit</span>
           </div>
           <div>© {new Date().getFullYear()} NexaFinance Inc.</div>
@@ -298,7 +293,7 @@ export default function LoginPage() {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded accent-[#005caa] cursor-pointer w-4 h-4"
+                  className="rounded accent-[#006948] cursor-pointer w-4 h-4"
                 />
                 <span>Ingat saya</span>
               </label>
@@ -309,7 +304,7 @@ export default function LoginPage() {
                   e.preventDefault();
                   alert("Silakan hubungi administrator workspace untuk pemulihan akun.");
                 }}
-                className="text-[#005caa] font-semibold hover:underline"
+                className="text-[#006948] font-semibold hover:underline"
               >
                 Lupa kata sandi?
               </a>
@@ -317,7 +312,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="btn btn-primary w-full !py-3.5 !rounded-full shadow-[0_4px_16px_rgba(0,92,170,0.25)] hover:shadow-[0_8px_24px_rgba(0,92,170,0.35)] text-sm font-bold mt-2 min-h-[48px]"
+              className="w-full py-3.5 px-6 rounded-lg bg-[#006948] hover:bg-[#00855d] text-white shadow-[0_4px_16px_rgba(0,105,72,0.25)] hover:shadow-[0_8px_24px_rgba(0,105,72,0.35)] text-sm font-bold mt-2 min-h-[48px] flex items-center justify-center gap-2 transition-all"
               disabled={loading}
             >
               <span>{loading ? "Memverifikasi..." : "Masuk ke NexaFinance"}</span>
@@ -326,12 +321,12 @@ export default function LoginPage() {
           </form>
 
           {/* Quick Demo Helper */}
-          <div className="mt-5 p-3 rounded-xl bg-[#f0f6fa] border border-dashed border-[#b8d5ed] flex items-center justify-between text-xs flex-wrap gap-2">
-            <span className="text-[#003666] font-medium">Akun Demo Cepat:</span>
+          <div className="mt-5 p-3 rounded-xl bg-[#ebedfc] border border-dashed border-[#dfe2f1] flex items-center justify-between text-xs flex-wrap gap-2">
+            <span className="text-[#171b26] font-medium">Akun Demo Cepat:</span>
             <button
               type="button"
               onClick={() => handleFillDemo("iman@gmail.com")}
-              className="bg-white border border-[#005caa] text-[#005caa] font-bold hover:bg-[#005caa] hover:text-white px-3 py-1 rounded-full transition-colors"
+              className="bg-white border border-[#006948] text-[#006948] font-bold hover:bg-[#006948] hover:text-white px-3 py-1 rounded-full transition-colors"
             >
               Isi Akun Admin
             </button>
@@ -339,13 +334,13 @@ export default function LoginPage() {
 
           <div className="text-center mt-5 text-xs sm:text-sm text-[#64748b]">
             Belum memiliki akun?{" "}
-            <Link href="/register" className="font-bold text-[#005caa] hover:underline">
+            <Link href="/register" className="font-bold text-[#006948] hover:underline">
               Daftar Sekarang
             </Link>
           </div>
 
           <div className="text-center mt-6 pt-4 border-t border-slate-100 text-[11.5px] text-[#64748b] flex items-center justify-center gap-1.5">
-            <CheckCircle size={14} className="text-[#005caa]" />
+            <CheckCircle size={14} className="text-[#006948]" />
             <span>Kerahasiaan data terjamin dengan enkripsi end-to-end</span>
           </div>
         </div>
