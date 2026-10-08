@@ -132,11 +132,21 @@ export async function processInboundWhatsAppMessage(
         `• *anggaran* : Cek status pagu anggaran bulanan`,
         `• *rekening* : Daftar rekening & dompet aktif`,
         ``,
-        `📝 *Catat Transaksi Instan (AI Natural Language):*`,
-        `Cukup ketik kalimat sehari-hari, contoh:`,
+        `📝 *Catat Transaksi Otomatis (AI):*`,
+        `Ketik kalimat sehari-hari, AI langsung mencatat otomatis:`,
+        ``,
+        `🟢 *Pemasukan:*`,
+        `• _Pemasukan 500rb jual baju masuk bca_`,
+        `• _Gaji freelance 2.5jt masuk rekening Mandiri_`,
+        `• _Terima komisi affiliate 350rb kas_`,
+        `• _+ 150rb bonus proyek_`,
+        ``,
+        `🔴 *Pengeluaran:*`,
         `• _Makan siang padang 35rb bayar bca_`,
         `• _Beli bensin pertamax 50rb bayar tunai_`,
-        `• _Gaji freelance 2.5jt masuk bca_`,
+        `• _Beli kopi 25rb bayar qris gopay_`,
+        ``,
+        `🔵 *Transfer Antar Rekening:*`,
         `• _Transfer 300rb dari BCA ke Kas Dompet_`,
         `━━━━━━━━━━━━━━━━━━━━━━━━━`,
         `_NexaFinance Institutional Finance Intelligence_`,
@@ -373,13 +383,12 @@ export async function processInboundWhatsAppMessage(
         `Saya belum dapat mengenali nominal transaksi dari pesan:`,
         `_"${trimmedMsg}"_`,
         ``,
-        `💡 *Contoh Format yang Didukung:*`,
-        `• _Makan siang padang 35rb bayar bca_`,
-        `• _Beli kopi kenangan 22.000_`,
-        `• _Gaji freelance 1.5 jt masuk mandiri_`,
-        `• _Transfer 250rb dari BCA ke Kas Dompet_`,
+        `💡 *Contoh Format Bebas yang Didukung:*`,
+        `• 🟢 *Pemasukan:* _Pemasukan 500rb jualan ke bca_ atau _Gaji 5jt mandiri_`,
+        `• 🔴 *Pengeluaran:* _Makan siang 35rb bca_ atau _Beli bensin 50rb tunai_`,
+        `• 🔵 *Transfer:* _Transfer 250rb dari BCA ke Kas Dompet_`,
         ``,
-        `Ketik *menu* untuk melihat daftar perintah bantuan.`,
+        `Ketik *menu* untuk melihat daftar panduan lengkap.`,
       ].join("\n"),
       actionTaken: "PARSE_FAILED",
       workspaceName: workspace.name,
@@ -416,20 +425,28 @@ export async function processInboundWhatsAppMessage(
       select: { balance: true, name: true },
     });
 
-    const typeIcons = {
-      EXPENSE: "🔴 *Pengeluaran*",
-      INCOME: "🟢 *Pemasukan*",
-      TRANSFER: "🔵 *Transfer Dana*",
+    const headerTitles = {
+      EXPENSE: "🔴 *PENGELUARAN BERHASIL DICATAT!*",
+      INCOME: "🟢 *PEMASUKAN BERHASIL DICATAT!*",
+      TRANSFER: "🔵 *TRANSFER DANA BERHASIL!*",
     };
 
+    const typeIcons = {
+      EXPENSE: "🔴 Pengeluaran",
+      INCOME: "🟢 Pemasukan",
+      TRANSFER: "🔵 Transfer Dana",
+    };
+
+    const sign = parsed.type === "INCOME" ? "+" : parsed.type === "EXPENSE" ? "-" : "";
+
     const replyLines = [
-      `✅ *TRANSAKSI BERHASIL DICATAT!*`,
+      `✅ ${headerTitles[parsed.type]}`,
       `━━━━━━━━━━━━━━━━━━━━━━━━━`,
       `🏢 Workspace: *${workspace.name}*`,
-      `📝 Jenis: ${typeIcons[parsed.type]}`,
-      `💰 Nominal: *${formatRupiah(parsed.amount)}*`,
+      `📝 Jenis: *${typeIcons[parsed.type]}*`,
+      `💰 Nominal: *${sign}${formatRupiah(parsed.amount)}*`,
       `📂 Keterangan: *${parsed.description}*`,
-      `💳 Rekening: *${parsed.accountName || updatedAccount?.name || "Rekening"}*`,
+      `💳 ${parsed.type === "INCOME" ? "Masuk ke Rekening" : "Rekening"}: *${parsed.accountName || updatedAccount?.name || "Rekening"}*`,
     ];
 
     const formattedTxTime = new Date(transaction.transactedAt)
