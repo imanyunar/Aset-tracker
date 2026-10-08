@@ -28,7 +28,7 @@ const chatSchema = z.preprocess(
     messages: z.array(
       z.object({
         role: z.enum(["user", "assistant"]),
-        content: z.string().min(1, "Pesan tidak boleh kosong"),
+        content: z.string("Pesan tidak boleh kosong").min(1, "Pesan tidak boleh kosong"),
       })
     ),
   })

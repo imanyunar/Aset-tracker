@@ -17,10 +17,20 @@ const upsertBudgetSchema = z.preprocess(
   },
   z.object({
     categoryId: z.string("Kategori anggaran wajib dipilih").min(1, "Kategori anggaran wajib dipilih"),
-    amount: z.number().or(z.string()).transform((val) => {
-      const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
-      return BigInt(num);
-    }),
+    amount: z.preprocess(
+      (v: any) => {
+        if (v === undefined || v === null || v === "") return 0;
+        if (typeof v === "string") {
+          const cleaned = v.replace(/[^0-9]/g, "");
+          return cleaned ? parseInt(cleaned, 10) : 0;
+        }
+        return Math.round(Number(v) || 0);
+      },
+      z
+        .number({ message: "Nominal anggaran wajib diisi" })
+        .min(1, "Nominal pagu anggaran harus lebih besar dari 0 Rupiah")
+        .transform((val) => BigInt(val))
+    ),
     period: z.string().regex(/^\d{4}-\d{2}$/, "Format periode harus YYYY-MM").optional(),
   })
 );

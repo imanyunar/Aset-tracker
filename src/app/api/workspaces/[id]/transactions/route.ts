@@ -21,29 +21,69 @@ const createTransactionSchema = z.preprocess(
         (val.sourceAccountId && String(val.sourceAccountId).trim()) ||
         undefined;
 
+      const toAccId =
+        val.toAccountId !== undefined && val.toAccountId !== null && String(val.toAccountId).trim() !== ""
+          ? String(val.toAccountId).trim()
+          : val.destinationAccountId !== undefined && val.destinationAccountId !== null && String(val.destinationAccountId).trim() !== ""
+          ? String(val.destinationAccountId).trim()
+          : null;
+
+      const catId =
+        val.categoryId !== undefined && val.categoryId !== null && String(val.categoryId).trim() !== ""
+          ? String(val.categoryId).trim()
+          : null;
+
+      const noteText =
+        val.notes !== undefined && val.notes !== null && String(val.notes).trim() !== ""
+          ? String(val.notes).trim()
+          : null;
+
+      let cleanDate = new Date();
+      if (val.transactedAt) {
+        const d = new Date(val.transactedAt);
+        if (!isNaN(d.getTime())) cleanDate = d;
+      } else if (val.date) {
+        const d = new Date(val.date);
+        if (!isNaN(d.getTime())) cleanDate = d;
+      }
+
       return {
         ...val,
         type: val.type || "EXPENSE",
         accountId: accId,
-        toAccountId: val.toAccountId !== undefined ? val.toAccountId : val.destinationAccountId,
-        transactedAt: val.transactedAt || val.date,
+        toAccountId: toAccId,
+        categoryId: catId,
+        notes: noteText,
+        transactedAt: cleanDate,
         description: desc,
       };
     }
     return val;
   },
   z.object({
-    type: z.nativeEnum(TransactionType, "Tipe transaksi wajib dipilih").default(TransactionType.EXPENSE),
+    type: z
+      .nativeEnum(TransactionType, "Tipe transaksi wajib dipilih (EXPENSE, INCOME, atau TRANSFER)")
+      .default(TransactionType.EXPENSE),
     accountId: z.string().optional(),
     toAccountId: z.string().optional().nullable(),
     categoryId: z.string().optional().nullable(),
-    amount: z.number().or(z.string()).transform((val) => {
-      const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(Number(val) || 0);
-      return BigInt(num);
-    }),
+    amount: z.preprocess(
+      (v: any) => {
+        if (v === undefined || v === null || v === "") return 0;
+        if (typeof v === "string") {
+          const cleaned = v.replace(/[^0-9]/g, "");
+          return cleaned ? parseInt(cleaned, 10) : 0;
+        }
+        return Math.round(Number(v) || 0);
+      },
+      z
+        .number({ message: "Nominal transaksi wajib diisi" })
+        .min(1, "Nominal transaksi harus lebih besar dari 0 Rupiah")
+        .transform((val) => BigInt(val))
+    ),
     description: z.string().default("Transaksi"),
     notes: z.string().optional().nullable(),
-    transactedAt: z.string().optional().transform((val) => (val ? new Date(val) : new Date())),
+    transactedAt: z.date().default(() => new Date()),
   })
 );
 

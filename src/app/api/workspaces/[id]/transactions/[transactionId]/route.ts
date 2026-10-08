@@ -13,12 +13,52 @@ import { z } from "zod";
 const updateTransactionSchema = z.preprocess(
   (val: any) => {
     if (typeof val === "object" && val !== null) {
+      const accId =
+        (val.accountId && String(val.accountId).trim()) ||
+        (val.sourceAccountId && String(val.sourceAccountId).trim()) ||
+        undefined;
+
+      const toAccId =
+        val.toAccountId !== undefined
+          ? (val.toAccountId && String(val.toAccountId).trim() !== "" ? String(val.toAccountId).trim() : null)
+          : val.destinationAccountId !== undefined
+          ? (val.destinationAccountId && String(val.destinationAccountId).trim() !== "" ? String(val.destinationAccountId).trim() : null)
+          : undefined;
+
+      const catId =
+        val.categoryId !== undefined
+          ? (val.categoryId && String(val.categoryId).trim() !== "" ? String(val.categoryId).trim() : null)
+          : undefined;
+
+      const desc =
+        val.description !== undefined
+          ? String(val.description).trim()
+          : val.title !== undefined
+          ? String(val.title).trim()
+          : val.name !== undefined
+          ? String(val.name).trim()
+          : undefined;
+
+      const noteText =
+        val.notes !== undefined
+          ? (val.notes && String(val.notes).trim() !== "" ? String(val.notes).trim() : null)
+          : undefined;
+
+      let cleanDate: Date | undefined = undefined;
+      const rawDate = val.transactedAt || val.date;
+      if (rawDate) {
+        const d = new Date(rawDate);
+        if (!isNaN(d.getTime())) cleanDate = d;
+      }
+
       return {
         ...val,
-        accountId: val.accountId || val.sourceAccountId,
-        toAccountId: val.toAccountId !== undefined ? val.toAccountId : val.destinationAccountId,
-        transactedAt: val.transactedAt || val.date,
-        description: val.description || val.title || val.name,
+        accountId: accId,
+        toAccountId: toAccId,
+        categoryId: catId,
+        description: desc,
+        notes: noteText,
+        transactedAt: cleanDate,
       };
     }
     return val;
@@ -29,19 +69,18 @@ const updateTransactionSchema = z.preprocess(
     toAccountId: z.string().optional().nullable(),
     categoryId: z.string().optional().nullable(),
     amount: z
-      .number()
-      .or(z.string())
-      .transform((val) => {
-        const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
-        return BigInt(num);
-      })
-      .optional(),
-    description: z.string().min(1).optional(),
+      .preprocess((v: any) => {
+        if (v === undefined || v === null || v === "") return undefined;
+        if (typeof v === "string") {
+          const cleaned = v.replace(/[^0-9]/g, "");
+          return cleaned ? parseInt(cleaned, 10) : 0;
+        }
+        return Math.round(Number(v) || 0);
+      }, z.number().min(1, "Nominal transaksi harus lebih besar dari 0 Rupiah").optional())
+      .transform((val) => (val !== undefined ? BigInt(val) : undefined)),
+    description: z.string().min(1, "Keterangan transaksi minimal 1 karakter").optional(),
     notes: z.string().optional().nullable(),
-    transactedAt: z
-      .string()
-      .transform((val) => new Date(val))
-      .optional(),
+    transactedAt: z.date().optional(),
   })
 );
 

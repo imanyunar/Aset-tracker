@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "test:e2e": "e2e run",
     "dev:vue": "npm run dev --prefix frontend",
     "build:vue": "npm run build --prefix frontend",
     "video:dev": "npm run dev --prefix video",
@@ -32,10 +33,14 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@ai-sdk/google": "^4.0.92",
+    "@e2e-dev/web": "^0.13.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "ai": "^7.0.133",
+    "e2e": "^0.18.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "prisma": "^6.4.1",
