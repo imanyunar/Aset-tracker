@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#001a33"/>
+      <stop offset="50%" stop-color="#003566"/>
+      <stop offset="100%" stop-color="#005caa"/>
+    </linearGradient>
+    <linearGradient id="nGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#005caa"/>
+    </linearGradient>
+    <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="60%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#003566"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="34" fill="url(#bgGrad)" stroke="#38bdf8" stroke-width="2.5" stroke-opacity="0.35"/>
+  <rect x="10" y="10" width="108" height="108" rx="28" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.12"/>
+  <g filter="url(#glow)">
+    <path d="M34 32 H48 V96 H34 Z" fill="url(#nGrad)" rx="3"/>
+    <path d="M80 32 H94 V96 H80 Z" fill="url(#nGrad)" rx="3"/>
+    <path d="M42 32 L86 96 H72 L34 40 Z" fill="url(#beamGrad)"/>
+    <circle cx="87" cy="34" r="5" fill="#38bdf8"/>
+    <circle cx="87" cy="34" r="2.5" fill="#ffffff"/>
+  </g>
+</svg>
