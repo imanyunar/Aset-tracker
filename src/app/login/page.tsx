@@ -116,10 +116,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleFillDemo = (demoEmail: string) => {
-    setEmail(demoEmail);
-    setPassword("admin123");
-  };
 
   const slide = HIGHLIGHT_SLIDES[currentSlide];
 
@@ -321,26 +317,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Quick Demo Helper */}
-          <div className="mt-5 p-3 rounded-xl bg-[#ebedfc] border border-dashed border-[#dfe2f1] flex items-center justify-between text-xs flex-wrap gap-2">
-            <span className="text-[#171b26] font-medium">Demo 1-Klik:</span>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => handleFillDemo("demo@nexafinance.com")}
-                className="bg-white border border-[#006948] text-[#006948] font-bold hover:bg-[#006948] hover:text-white px-3 py-1 rounded-full transition-colors"
-              >
-                Alex (demo)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFillDemo("iman@gmail.com")}
-                className="bg-white border border-[#006948] text-[#006948] font-bold hover:bg-[#006948] hover:text-white px-3 py-1 rounded-full transition-colors"
-              >
-                Iman
-              </button>
-            </div>
-          </div>
 
           <div className="text-center mt-5 text-xs sm:text-sm text-[#64748b]">
             Belum memiliki akun?{" "}

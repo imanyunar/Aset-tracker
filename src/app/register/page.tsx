@@ -223,11 +223,6 @@ export default function RegisterPage() {
     }
   };
 
-  const handleAutoFillDemo = () => {
-    const code = activeOtpCode;
-    setOtp(code.split(""));
-    verifyAndComplete(code);
-  };
 
   return (
     <div className="min-h-screen bg-[#faf8ff] flex flex-col justify-center items-center p-5 animate-fade-in font-sans text-[#171b26]">
@@ -414,19 +409,9 @@ export default function RegisterPage() {
                 />
               ))}
             </div>
-
-            {/* Demo Helper Banner */}
-            <div className="p-2.5 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-between text-xs">
-              <span className="text-[#00873c] font-medium">
-                Kode OTP WhatsApp: <strong>{activeOtpCode}</strong>
-              </span>
-              <button
-                type="button"
-                onClick={handleAutoFillDemo}
-                className="px-2 py-1 rounded bg-[#006948] text-white font-semibold text-[11px] hover:bg-[#00855d] transition-colors"
-              >
-                Isi Otomatis
-              </button>
+            <div className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex items-center gap-2.5 text-xs text-[#475569]">
+              <span className="text-[#25D366] text-base leading-none">💬</span>
+              <span>Kode OTP 6-digit telah dikirimkan ke WhatsApp Anda. Masukkan kode di atas untuk verifikasi.</span>
             </div>
 
             <button

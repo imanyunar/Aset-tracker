@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+
+<html lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container-low":"#f2f3ff","tertiary":"#006b2e","on-secondary":"#ffffff","on-error-container":"#93000a","on-primary-fixed":"#002114","surface-container-lowest":"#ffffff","primary":"#006948","on-background":"#171b26","error-container":"#ffdad6","primary-fixed":"#85f8c4","tertiary-fixed":"#66ff8e","surface-variant":"#dfe2f1","inverse-surface":"#2c303b","surface-container-highest":"#dfe2f1","secondary-fixed":"#e2dfff","inverse-primary":"#68dba9","on-tertiary-container":"#f7fff3","primary-fixed-dim":"#68dba9","surface-dim":"#d7d9e8","on-primary-container":"#f5fff7","surface":"#faf8ff","inverse-on-surface":"#eef0ff","on-surface":"#171b26","primary-container":"#00855d","on-primary":"#ffffff","on-tertiary-fixed-variant":"#005322","on-secondary-container":"#fffbff","outline":"#6d7a72","error":"#ba1a1a","surface-tint":"#006c4a","secondary-container":"#645efb","tertiary-fixed-dim":"#3de273","secondary":"#4b41e1","on-secondary-fixed":"#0f0069","tertiary-container":"#00873c","on-secondary-fixed-variant":"#3323cc","surface-container-high":"#e5e7f6","surface-bright":"#faf8ff","outline-variant":"#bccac0","on-surface-variant":"#3d4a42","on-tertiary":"#ffffff","on-primary-fixed-variant":"#005137","surface-container":"#ebedfc","secondary-fixed-dim":"#c3c0ff","on-tertiary-fixed":"#002109","background":"#faf8ff","on-error":"#ffffff"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-sm":"0.5rem",margin:"1rem","space-md":"0.75rem","space-2xs":"0.125rem","space-3xl":"3rem","space-xl":"1.5rem",gutter:"1rem","gutter-lg":"1.5rem","margin-lg":"2rem","margin-md":"1.5rem","space-2xl":"2rem","space-xs":"0.25rem","space-lg":"1rem"},fontFamily:{"display-hero":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"display-hero-mobile":["Plus Jakarta Sans"],"title-balance":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-caps":["Plus Jakarta Sans"],"badge-label":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"numeric-table":["Plus Jakarta Sans"]},fontSize:{"display-hero":["40px",{lineHeight:"48px",letterSpacing:"-0.03em",fontWeight:"700"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0em",fontWeight:"400"}],"headline-lg":["30px",{lineHeight:"38px",letterSpacing:"-0.02em",fontWeight:"600"}],"headline-sm":["18px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"600"}],"headline-md":["22px",{lineHeight:"28px",letterSpacing:"-0.015em",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",letterSpacing:"-0.005em",fontWeight:"400"}],"display-hero-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.02em",fontWeight:"700"}],"title-balance":["26px",{lineHeight:"32px",letterSpacing:"-0.02em",fontWeight:"700"}],"body-md":["14px",{lineHeight:"20px",letterSpacing:"0em",fontWeight:"400"}],"label-caps":["11px",{lineHeight:"14px",letterSpacing:"0.06em",fontWeight:"600"}],"badge-label":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"600"}],"headline-lg-mobile":["24px",{lineHeight:"32px",letterSpacing:"-0.015em",fontWeight:"600"}],"numeric-table":["13px",{lineHeight:"18px",letterSpacing:"0em",fontWeight:"500"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.12)]"><span class="material-symbols-outlined text-on-primary text-[20px]">account_balance_wallet</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">NexaFinance</span><span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider mt-space-2xs">SME Treasury</span></div></div></div><div class="px-space-md py-space-xs"><div class="px-space-sm py-space-xs"><span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Menu Utama</span></div><nav class="flex flex-col gap-space-2xs mt-space-2xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold shadow-[0_1px_4px_rgba(0,105,72,0.15)]"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[20px] transition-transform group-hover:scale-105">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="buku-transaksi" href="#"><span class="material-symbols-outlined text-[20px] transition-transform group-hover:scale-105">receipt_long</span><span class="font-body-md text-body-md">Buku Transaksi</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="pagu-anggaran" href="#"><span class="material-symbols-outlined text-[20px] transition-transform group-hover:scale-105">pie_chart</span><span class="font-body-md text-body-md">Pagu Anggaran</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="rekening-&amp;-dompet" href="#"><span class="material-symbols-outlined text-[20px] transition-transform group-hover:scale-105">account_balance</span><span class="font-body-md text-body-md">Rekening &amp; Dompet</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all group bg-primary-container text-on-primary-container font-semibold shadow-[0_1px_4px_rgba(0,105,72,0.15)]" data-path="ai-financial-agent" href="#"><span class="material-symbols-outlined text-[20px] text-secondary transition-transform group-hover:scale-105">smart_toy</span><span class="font-body-md text-body-md">AI Financial Agent</span><span class="ml-auto font-label-caps text-label-caps px-space-xs py-space-2xs rounded-full bg-secondary-fixed text-on-secondary-fixed uppercase">Pro</span></a></nav></div></div><div class="p-space-md flex flex-col gap-space-sm"><div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex flex-col gap-space-2xs"><div class="flex items-center justify-between"><span class="font-label-caps text-label-caps text-outline uppercase">Database Sync</span><span class="flex items-center gap-space-2xs"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span class="font-label-caps text-label-caps text-tertiary font-bold">Neon PG</span></span></div><div class="font-numeric-table text-numeric-table text-on-surface-variant truncate">Pool: ap-southeast-1</div></div><div class="px-space-sm py-space-xs text-center"><p class="font-label-caps text-label-caps text-outline">Crafted for SMEs by Nexa</p></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 flex items-center justify-between px-gutter-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm bg-surface-container-lowest px-space-md py-space-xs rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.04)] cursor-pointer hover:bg-surface-container-low transition-colors"><div class="w-6 h-6 rounded-md bg-primary-fixed flex items-center justify-center"><span class="material-symbols-outlined text-on-primary-fixed-variant text-[16px]">domain</span></div><div class="flex flex-col text-left"><span class="font-body-sm text-body-sm font-semibold text-on-surface leading-tight">Nexa Digital Agency</span><span class="font-label-caps text-label-caps text-on-surface-variant leading-none">Workspace Iman Azizi</span></div><span class="material-symbols-outlined text-outline text-[18px] ml-space-xs">unfold_more</span></div></div><div class="flex items-center gap-space-md"><div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)]"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span></span><span class="font-badge-label text-badge-label text-on-surface-variant">WhatsApp Sync: Active (2-way)</span></div><button class="inline-flex items-center gap-space-xs bg-primary text-on-primary px-space-md py-space-sm rounded-lg font-body-md text-body-md font-semibold shadow-[0_1px_4px_rgba(0,105,72,0.2)] hover:bg-primary-container transition-all" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Catat Transaksi</span></button><div class="flex items-center gap-space-sm pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="hidden xl:flex flex-col text-left"><span class="font-body-sm text-body-sm font-semibold text-on-surface leading-tight">Iman Azizi</span><span class="font-label-caps text-label-caps text-outline leading-none">Business Owner</span></div></div></div></header><main class="w-full pt-16 px-gutter-lg pb-space-3xl bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Orchestrator Header Panel -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-xl shadow-sm mb-space-xl">
+<div class="absolute -right-12 -top-12 w-64 h-64 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute right-48 -bottom-16 w-48 h-48 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg">
+<div class="flex items-start sm:items-center gap-space-md">
+<div class="relative flex-shrink-0">
+<div class="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center shadow-md shadow-secondary/20">
+<span class="material-symbols-outlined text-on-secondary text-[28px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<span class="absolute -bottom-1 -right-1 flex h-4 w-4">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-4 w-4 bg-tertiary items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary"></span>
+</span>
+</span>
+</div>
+<div class="flex flex-col">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-headline-md text-headline-md text-on-surface">Nexa Treasury Agent</span>
+<span class="font-label-caps text-label-caps px-space-xs py-space-2xs rounded-full bg-secondary-fixed text-on-secondary-fixed font-semibold uppercase">v4.2 Autonomous</span>
+<span class="font-label-caps text-label-caps px-space-xs py-space-2xs rounded-full bg-primary-fixed text-on-primary-fixed uppercase flex items-center gap-space-2xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              Groq Llama 3.3 70B
+            </span>
+</div>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-space-2xs mt-space-2xs text-on-surface-variant font-body-sm text-body-sm">
+<span class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary">bolt</span>
+              Latensi Pemrosesan: <strong class="text-on-surface font-numeric-table text-numeric-table">120ms</strong>
+</span>
+<span class="text-outline-variant">•</span>
+<span class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">memory</span>
+              14 Aturan Finansial Aktif (Continuous Memory)
+            </span>
+<span class="text-outline-variant">•</span>
+<span class="flex items-center gap-space-2xs text-primary">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+              Level Otoritas: Semi-Otonom
+            </span>
+</div>
+</div>
+</div>
+<!-- Quick Control Action Buttons -->
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-all text-body-sm font-body-sm font-medium shadow-sm" id="btn-memory-rules" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">psychology</span>
+<span>Continuous Memory</span>
+<span class="ml-space-2xs px-space-xs py-0.5 rounded text-[11px] bg-surface-container-highest text-on-surface-variant font-numeric-table">14</span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-all text-body-sm font-body-sm font-medium shadow-sm" id="btn-economic-radar" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">travel_explore</span>
+<span>Economic Radar</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-low text-on-surface-variant hover:text-error hover:bg-error-container transition-all text-body-sm font-body-sm font-medium" id="btn-clear-chat" type="button">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+<span>Reset Konteks</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main 2-Column Responsive Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+<!-- LEFT COLUMN: Interactive Financial AI Chat Workspace (7 cols) -->
+<section class="lg:col-span-7 flex flex-col bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden min-h-[760px] relative">
+<!-- Conversation Stream Status Bar -->
+<div class="px-space-lg py-space-sm bg-surface-container-low flex items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-space-2xs text-on-surface font-medium">
+<span class="material-symbols-outlined text-secondary text-[18px]">forum</span>
+<span>Live Agent Session</span>
+</div>
+<span class="font-label-caps text-label-caps px-space-xs py-0.5 rounded bg-surface text-outline uppercase font-semibold">ID: #NX-AGENT-994</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-body-sm font-body-sm">Audit Trail: Terenkripsi</span>
+</div>
+</div>
+<!-- Scrollable Chat Stream Container -->
+<div class="flex-1 p-space-lg overflow-y-auto space-y-space-xl max-h-[640px]" id="chat-stream">
+<!-- Turn 0: Autonomous Welcome Message -->
+<div class="flex items-start gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="flex flex-col max-w-xl">
+<div class="flex items-center gap-space-xs mb-space-2xs">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Nexa Treasury Agent</span>
+<span class="font-label-caps text-label-caps text-outline">09:14 WIB</span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-xl text-on-surface font-body-md text-body-md leading-relaxed shadow-sm">
+<p>Halo Mas <strong class="text-on-surface font-semibold">Iman Azizi</strong>! Saya asisten finansial otonom NexaFinance. Seluruh data rekening BCA Operasional, Mandiri Payroll, serta alokasi anggaran Q2 sudah tersinkronisasi realtime.</p>
+<p class="mt-space-xs">Saya siap memproses perintah mutasi instan, pencatatan nota OCR, atau analisis burn rate Nexa Digital Agency. Apa yang ingin kita eksekusi hari ini?</p>
+<!-- Quick Prompt Pills -->
+<div class="flex flex-wrap gap-space-xs mt-space-md pt-space-xs">
+<button class="quick-prompt-btn px-space-sm py-1 rounded-lg bg-surface text-secondary font-body-sm text-body-sm hover:bg-secondary-fixed transition-colors flex items-center gap-1 shadow-sm text-left" type="button">
+<span class="material-symbols-outlined text-[15px]">trending_up</span>
+<span>"Cek runway kas agency saat ini"</span>
+</button>
+<button class="quick-prompt-btn px-space-sm py-1 rounded-lg bg-surface text-secondary font-body-sm text-body-sm hover:bg-secondary-fixed transition-colors flex items-center gap-1 shadow-sm text-left" type="button">
+<span class="material-symbols-outlined text-[15px]">receipt_long</span>
+<span>"Berapa pengeluaran tim design minggu ini?"</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Turn 1: User Request (Pencatatan Figma) -->
+<div class="flex items-start justify-end gap-space-md">
+<div class="flex flex-col items-end max-w-lg">
+<div class="flex items-center gap-space-xs mb-space-2xs">
+<span class="font-label-caps text-label-caps text-outline">09:18 WIB</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Iman Azizi</span>
+</div>
+<div class="bg-primary text-on-primary p-space-md rounded-xl font-body-md text-body-md shadow-sm leading-relaxed">
+              Catat pengeluaran beli lisensi Figma Team 1.850.000 dari BCA Operasional
+            </div>
+<span class="font-label-caps text-label-caps text-tertiary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[13px]">done_all</span> Diproses via NLP Intent Engine
+            </span>
+</div>
+<div class="w-9 h-9 rounded-lg bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+</div>
+<!-- Turn 2: Agent Response with Interactive Action Card -->
+<div class="flex items-start gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="flex flex-col max-w-xl w-full">
+<div class="flex items-center gap-space-xs mb-space-2xs">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Nexa Treasury Agent</span>
+<span class="font-label-caps text-label-caps text-outline">09:18 WIB</span>
+</div>
+<div class="space-y-space-sm">
+<p class="font-body-md text-body-md text-on-surface">
+                Saya telah mendeteksi transaksi SaaS recurring dan memetakan akun rekening tujuan. Sesuai <span class="font-semibold text-secondary">Aturan Memori #04</span>, lisensi software dikategorikan ke pos <em>SaaS &amp; Software Tools</em>.
+              </p>
+<!-- High-Density Action Card -->
+<div class="rounded-xl bg-surface-container p-space-md shadow-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-caps text-label-caps text-on-surface font-semibold uppercase tracking-wider">Draft Mutasi Siap Rekonsiliasi</span>
+</div>
+<span class="font-numeric-table text-numeric-table font-semibold text-on-surface-variant bg-surface-container-highest px-space-xs py-0.5 rounded">#TX-8821</span>
+</div>
+<div class="mt-space-xs bg-surface-container-lowest p-space-md rounded-lg flex flex-col gap-space-xs shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-md bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold text-xs">
+                        BCA
+                      </div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Figma Team Subscription (Annual Seat)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">BCA Operasional (rek. 8820-***-11)</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-title-balance text-title-balance text-on-surface font-bold">- Rp 1.850.000</span>
+<span class="block font-label-caps text-label-caps text-tertiary">Terverifikasi Pajak PPN 11%</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-space-xs pt-space-xs mt-space-2xs text-body-sm text-body-sm">
+<div class="p-space-xs bg-surface-container-low rounded">
+<span class="font-label-caps text-label-caps text-outline block">Kategori</span>
+<span class="font-medium text-on-surface">SaaS &amp; Software</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded">
+<span class="font-label-caps text-label-caps text-outline block">Pagu Anggaran</span>
+<span class="font-medium text-on-surface">Software (Tersedia 42%)</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded">
+<span class="font-label-caps text-label-caps text-outline block">Approval Rule</span>
+<span class="font-medium text-on-surface">Auto-Approve (&lt; Rp 2jt)</span>
+</div>
+</div>
+</div>
+<!-- Action Button Row inside Card -->
+<div class="mt-space-md flex items-center justify-end gap-space-sm" id="action-tx-8821">
+<button class="btn-cancel-tx px-space-md py-space-xs rounded-lg bg-surface-container-highest text-on-surface text-body-sm font-body-sm hover:bg-surface-variant transition-colors" type="button">
+                    Edit Detail
+                  </button>
+<button class="btn-confirm-tx px-space-md py-space-xs rounded-lg bg-primary text-on-primary text-body-sm font-body-sm font-semibold hover:bg-primary-container shadow-sm transition-all flex items-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Konfirmasi &amp; Masukkan Buku Transaksi</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Turn 3: User Request (Pengecekan Konsumsi & Alert) -->
+<div class="flex items-start justify-end gap-space-md">
+<div class="flex flex-col items-end max-w-lg">
+<div class="flex items-center gap-space-xs mb-space-2xs">
+<span class="font-label-caps text-label-caps text-outline">09:22 WIB</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Iman Azizi</span>
+</div>
+<div class="bg-primary text-on-primary p-space-md rounded-xl font-body-md text-body-md shadow-sm leading-relaxed">
+              Berapa total belanja konsumsi bulan ini dan apakah aman?
+            </div>
+</div>
+<div class="w-9 h-9 rounded-lg bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+</div>
+<!-- Turn 4: Agent Graphic Warning & Budget Burn Rate -->
+<div class="flex items-start gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="flex flex-col max-w-xl w-full">
+<div class="flex items-center gap-space-xs mb-space-2xs">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Nexa Treasury Agent</span>
+<span class="font-label-caps text-label-caps text-outline">09:22 WIB</span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-xl space-y-space-md shadow-sm">
+<div class="flex items-center gap-space-xs text-error font-medium text-body-md">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+<span>Peringatan: Pos Anggaran Konsumsi &amp; Pantry Memasuki Zona Kritis!</span>
+</div>
+<!-- Graphic Burn Rate Meter & Breakdown -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+<div class="flex items-center justify-between mb-space-2xs">
+<div>
+<span class="font-body-sm text-body-sm text-outline">Realisasi Pos Konsumsi Tim</span>
+<p class="font-headline-sm text-headline-sm text-on-surface font-bold">Rp 4.750.000 <span class="font-body-sm text-body-sm text-outline font-normal">/ Rp 5.000.000</span></p>
+</div>
+<div class="text-right">
+<span class="inline-block px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-caps text-label-caps font-bold">
+                      Burn Rate: 95.0%
+                    </span>
+<span class="block font-numeric-table text-numeric-table text-error font-semibold mt-0.5">Sisa: Rp 250.000</span>
+</div>
+</div>
+<!-- Custom Progress Bar -->
+<div class="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden mt-space-xs relative">
+<div class="bg-error h-full rounded-full transition-all duration-500" style="width: 95%;"></div>
+</div>
+<div class="flex justify-between items-center mt-space-2xs font-label-caps text-label-caps text-on-surface-variant">
+<span>Aman (&lt;70%)</span>
+<span>Waspada (70-90%)</span>
+<span class="text-error font-bold">Overbudget (&gt;90%)</span>
+</div>
+<!-- SVG Sparkline Bar Visualization -->
+<div class="mt-space-md pt-space-sm bg-surface-container-low p-space-sm rounded">
+<div class="flex items-center justify-between text-body-sm text-body-sm mb-space-2xs">
+<span class="font-medium text-on-surface">Tren 4 Pekan Terakhir</span>
+<span class="text-outline font-numeric-table">Minggu ini: +Rp 1.450.000</span>
+</div>
+<svg class="w-full h-10 text-error" fill="none" preserveaspectratio="none" viewbox="0 0 280 40">
+<rect class="opacity-80" fill="#68dba9" height="16" rx="3" width="45" x="10" y="24"></rect>
+<rect class="opacity-80" fill="#68dba9" height="22" rx="3" width="45" x="80" y="18"></rect>
+<rect fill="#d7d9e8" height="30" rx="3" width="45" x="150" y="10"></rect>
+<rect fill="#ba1a1a" height="38" rx="3" width="45" x="220" y="2"></rect>
+</svg>
+<div class="flex justify-between font-label-caps text-label-caps text-outline px-2 mt-1">
+<span>Mgg 1</span><span>Mgg 2</span><span>Mgg 3</span><span>Mgg 4 (Aktif)</span>
+</div>
+</div>
+</div>
+<div class="text-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+<p><strong>Rekomendasi Agent:</strong> Bulan ini masih menyisakan 6 hari operasional. Disarankan mengalihkan alokasi sisa dari surplus pos <em>Keperluan Kantor/ATK</em> (surplus Rp 820.000) atau menahan klaim konsumsi lembur non-esensial.</p>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-md py-space-xs rounded-lg bg-surface-container-highest text-on-surface font-body-sm text-body-sm font-semibold hover:bg-surface-variant transition-colors" type="button">
+                  Relokasi Anggaran ATK
+                </button>
+<button class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest text-secondary font-body-sm text-body-sm font-semibold hover:bg-surface-container-high transition-colors" type="button">
+                  Lihat Rincian Nota Konsumsi
+                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modern Financial Action Input Bar -->
+<div class="p-space-md bg-surface-container-lowest relative">
+<form class="flex flex-col gap-space-xs" id="agent-input-form" onsubmit="event.preventDefault(); window.submitAgentPrompt();">
+<!-- Attachment or Active Context chips -->
+<div class="hidden items-center gap-space-xs self-start px-space-sm py-1 rounded bg-secondary-fixed text-on-secondary-fixed text-body-sm font-body-sm" id="file-attachment-badge">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+<span class="font-medium" id="attachment-name">nota_makan_siang_klien.jpg (OCR Diproses)</span>
+<button class="text-on-secondary-fixed hover:text-error ml-1" onclick="window.removeAttachment()" type="button">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+</div>
+<div class="flex items-end gap-space-sm bg-surface-container-low p-space-xs rounded-xl focus-within:ring-2 focus-within:ring-primary transition-all">
+<!-- Upload Receipt OCR button -->
+<label class="p-space-sm rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface cursor-pointer transition-colors flex-shrink-0" title="Unggah Kuitansi/Nota untuk Ekstraksi OCR">
+<span class="material-symbols-outlined text-[22px]">document_scanner</span>
+<input accept="image/*,.pdf" class="hidden" id="receipt-upload" onchange="window.handleReceiptUpload(event)" type="file"/>
+</label>
+<!-- Voice Dictation simulation button -->
+<button class="p-space-sm rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors flex-shrink-0" id="btn-audio-memo" onclick="window.toggleAudioRecord()" title="Diktekan Perintah Suara via WhatsApp Agent" type="button">
+<span class="material-symbols-outlined text-[22px]" id="mic-icon">mic</span>
+</button>
+<!-- Text Input Area -->
+<textarea class="flex-1 bg-transparent border-0 resize-none py-space-sm px-space-xs text-on-surface placeholder:text-outline text-body-md font-body-md focus:outline-none min-h-[40px] max-h-32" id="user-prompt-input" onkeydown="if(event.key==='Enter' &amp;&amp; !event.shiftKey){ event.preventDefault(); window.submitAgentPrompt(); }" placeholder="Ketik instruksi finansial, catat mutasi, atau minta audit kas..." rows="1"></textarea>
+<!-- Send Action Button -->
+<button class="w-10 h-10 rounded-lg bg-primary hover:bg-primary-container text-on-primary flex items-center justify-center transition-all flex-shrink-0 shadow-sm" title="Kirim ke Nexa Agent" type="submit">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+<div class="flex items-center justify-between px-space-xs pt-1 text-on-surface-variant font-label-caps text-label-caps">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-tertiary">check</span>
+              Mode Interaktif: Transaksi langsung disinkronkan ke PostgreSQL &amp; WhatsApp Bot
+            </span>
+<span>Tekan <kbd class="px-1 py-0.5 rounded bg-surface-container-high text-on-surface text-[10px] font-mono">Enter ↵</kbd> untuk eksekusi</span>
+</div>
+</form>
+</div>
+</section>
+<!-- RIGHT COLUMN: Continuous Memory & Macro Market Radar (5 cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-lg">
+<!-- PANEL 1: Continuous Memory (Otak Pembelajaran AI) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm relative overflow-hidden">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[20px]">psychology</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Continuous Memory</h2>
+<p class="font-label-caps text-label-caps text-outline uppercase">Otak Pembelajaran &amp; Aturan Internal</p>
+</div>
+</div>
+<button class="inline-flex items-center gap-1 px-space-sm py-1 rounded-lg bg-surface-container text-secondary hover:bg-secondary-fixed text-body-sm font-body-sm font-semibold transition-colors" onclick="window.addRulePrompt()" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Aturan Baru</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+          Nexa Agent mempelajari preferensi bisnis spesifik Anda dan menerapkannya otomatis pada pencatatan harian.
+        </p>
+<!-- Memory Rule Cards List -->
+<div class="space-y-space-sm">
+<!-- Rule 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-caps text-label-caps font-bold px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed">RULE #01</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Persetujuan Petty Cash</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-tertiary" title="Rule Aktif">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-2xs leading-snug">
+              Batas approval petty cash di atas <strong>Rp 500.000</strong> wajib memerlukan konfirmasi Telegram/WhatsApp Iman Azizi sebelum posting.
+            </p>
+<div class="flex items-center justify-between mt-space-xs pt-space-2xs text-outline font-label-caps text-label-caps">
+<span>Sumber: WhatsApp Bot Learning</span>
+<span>Akurasi: 99.4%</span>
+</div>
+</div>
+<!-- Rule 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-caps text-label-caps font-bold px-1.5 py-0.5 rounded bg-primary-fixed text-on-primary-fixed">RULE #02</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Cadangan Kas Pajak 10%</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-tertiary" title="Rule Aktif">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-2xs leading-snug">
+              Setiap kali ada invoice proyek masuk di atas Rp 20.000.000, alokasikan otomatis <strong>10%</strong> ke rekening simpanan pajak badan.
+            </p>
+<div class="flex items-center justify-between mt-space-xs pt-space-2xs text-outline font-label-caps text-label-caps">
+<span>Diperbarui: 12 April 2025</span>
+<span>Pemberlakuan: Mandiri Payroll</span>
+</div>
+</div>
+<!-- Rule 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-caps text-label-caps font-bold px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface">RULE #03</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Mapping Kategori SaaS</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-tertiary" title="Rule Aktif">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-2xs leading-snug">
+              Semua mutasi vendor <em>Figma, Vercel, OpenAI, AWS, Google Workspace</em> otomatis dimasukkan ke pos beban <strong>SaaS &amp; Software Tools</strong>.
+            </p>
+<div class="flex items-center justify-between mt-space-xs pt-space-2xs text-outline font-label-caps text-label-caps">
+<span>Auto-Categorization</span>
+<span>100% Match Rate</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md text-center">
+<a class="font-body-sm text-body-sm font-semibold text-secondary hover:underline inline-flex items-center gap-1" href="#">
+<span>Buka Seluruh 14 Aturan Pembelajaran Agent</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</section>
+<!-- PANEL 2: Economic Web Crawler & Market Radar -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined text-[20px]">travel_explore</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Economic Web Crawler</h2>
+<p class="font-label-caps text-label-caps text-outline uppercase">Market Radar &amp; Kebijakan Makro</p>
+</div>
+</div>
+<div class="inline-flex items-center gap-1 text-tertiary font-label-caps text-label-caps bg-surface-container px-space-xs py-1 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>
+<span>LIVE CRAWL</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+          Data eksternal yang di-crawl berkala oleh Nexa Agent untuk memberikan proyeksi kas &amp; lindung nilai pengeluaran SME.
+        </p>
+<!-- Live Macro Indicators Strip -->
+<div class="grid grid-cols-3 gap-space-xs mb-space-md">
+<div class="bg-surface-container-low p-space-sm rounded-lg text-left">
+<span class="font-label-caps text-label-caps text-outline block">BI-Rate (7D RR)</span>
+<span class="font-numeric-table text-numeric-table font-bold text-on-surface text-[15px] block">6.00%</span>
+<span class="font-label-caps text-label-caps text-tertiary flex items-center">
+<span class="material-symbols-outlined text-[12px]">remove</span> Tetap Stabil
+            </span>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg text-left">
+<span class="font-label-caps text-label-caps text-outline block">Kurs USD / IDR</span>
+<span class="font-numeric-table text-numeric-table font-bold text-on-surface text-[15px] block">Rp 16.185</span>
+<span class="font-label-caps text-label-caps text-error flex items-center">
+<span class="material-symbols-outlined text-[12px]">arrow_drop_up</span> +0.42%
+            </span>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg text-left">
+<span class="font-label-caps text-label-caps text-outline block">Inflasi YoY</span>
+<span class="font-numeric-table text-numeric-table font-bold text-on-surface text-[15px] block">2.61%</span>
+<span class="font-label-caps text-label-caps text-tertiary flex items-center">
+<span class="material-symbols-outlined text-[12px]">check</span> Target Sasaran
+            </span>
+</div>
+</div>
+<!-- 3 Crawled Intelligence Articles & Impact on Nexa Digital Agency -->
+<div class="space-y-space-md">
+<!-- Story 1 -->
+<article class="p-space-sm rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-xs text-outline font-label-caps text-label-caps mb-1">
+<span class="font-semibold text-secondary uppercase">Bank Indonesia</span>
+<span>•</span>
+<span>2 jam yang lalu</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface leading-snug hover:text-primary transition-colors">
+              BI Pertahankan Suku Bunga Acuan di 6.00% untuk Jaga Stabilitas Rupiah
+            </h3>
+<div class="mt-space-2xs bg-surface-container p-space-xs rounded text-body-sm text-body-sm text-on-surface-variant flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary mt-0.5">insights</span>
+<span><strong class="text-on-surface">Dampak Agency:</strong> Beban kredit ekspansi stabil. Rekomendasi: Pertahankan cadangan kas darurat setara 4 bulan operasional.</span>
+</div>
+</article>
+<!-- Story 2 -->
+<article class="p-space-sm rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-xs text-outline font-label-caps text-label-caps mb-1">
+<span class="font-semibold text-secondary uppercase">Pasar Valas &amp; SaaS</span>
+<span>•</span>
+<span>5 jam yang lalu</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface leading-snug hover:text-primary transition-colors">
+              Penguatan Dolar AS Berpotensi Naikkan Biaya Langganan Server Cloud &amp; Alat Desain
+            </h3>
+<div class="mt-space-2xs bg-surface-container p-space-xs rounded text-body-sm text-body-sm text-on-surface-variant flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-error mt-0.5">insights</span>
+<span><strong class="text-on-surface">Dampak Agency:</strong> Biaya Figma &amp; AWS naik ~3-5% dalam Rupiah. AI merekomendasikan pembayaran tahunan di muka sebelum kuartal berakhir.</span>
+</div>
+</article>
+<!-- Story 3 -->
+<article class="p-space-sm rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-xs text-outline font-label-caps text-label-caps mb-1">
+<span class="font-semibold text-secondary uppercase">DJP Kemenkeu</span>
+<span>•</span>
+<span>Kemarin</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface leading-snug hover:text-primary transition-colors">
+              Pembaruan Coretax &amp; Insentif Pajak PPh Final UMKM 0.5% Berjalan Tertib
+            </h3>
+<div class="mt-space-2xs bg-surface-container p-space-xs rounded text-body-sm text-body-sm text-on-surface-variant flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary mt-0.5">insights</span>
+<span><strong class="text-on-surface">Dampak Agency:</strong> Sinkronisasi e-Faktur otomatis terkonfigurasi. Penghitungan potongan PPh 23 dari klien berjalan tanpa koreksi.</span>
+</div>
+</article>
+</div>
+<div class="mt-space-md pt-space-sm bg-surface-container-low rounded-lg p-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-primary text-[18px]">rss_feed</span>
+<span>Crawler Frekuensi: <strong>Tiap 15 Menit</strong></span>
+</div>
+<span class="font-label-caps text-label-caps text-outline font-numeric-table">Ping: 34ms</span>
+</div>
+</section>
+</div>
+</div>
+<!-- Interactive JavaScript for Client-Side Micro-Interactions -->
+<script>
+    (function initNexaAgent() {
+      const chatStream = document.getElementById('chat-stream');
+      const promptInput = document.getElementById('user-prompt-input');
+      const attachmentBadge = document.getElementById('file-attachment-badge');
+      const attachmentName = document.getElementById('attachment-name');
+      const micIcon = document.getElementById('mic-icon');
+      let isRecording = false;
+
+      // Click on preset prompt pills
+      document.querySelectorAll('.quick-prompt-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const text = this.innerText.replace(/"/g, '').trim();
+          promptInput.value = text;
+          promptInput.focus();
+        });
+      });
+
+      // Confirm Transaction button in Turn 2
+      document.addEventListener('click', function(e) {
+        const confirmBtn = e.target.closest('.btn-confirm-tx');
+        if (confirmBtn) {
+          const actionRow = document.getElementById('action-tx-8821');
+          if (actionRow) {
+            actionRow.innerHTML = `
+              <div class="w-full flex items-center justify-between bg-primary-fixed/30 p-space-xs rounded-lg text-primary text-body-sm font-body-sm">
+                <span class="flex items-center gap-space-2xs font-semibold">
+                  <span class="material-symbols-outlined text-[18px]">verified</span>
+                  Berhasil diposting ke Buku Kas & Jurnal Pengeluaran!
+                </span>
+                <span class="font-numeric-table text-xs text-on-surface-variant">Ledger Ref: #BCA-TX-8821</span>
+              </div>
+            `;
+          }
+        }
+
+        const cancelBtn = e.target.closest('.btn-cancel-tx');
+        if (cancelBtn) {
+          alert('Membuka modal edit atribut akuntansi transaksi #TX-8821...');
+        }
+      });
+
+      // Clear Context
+      document.getElementById('btn-clear-chat')?.addEventListener('click', () => {
+        if (confirm('Bersihkan riwayat percakapan sesi ini? Continuous Memory tetap tersimpan.')) {
+          alert('Konteks percakapan di-reset.');
+        }
+      });
+
+      // Radar & Memory button clicks scroll/highlight
+      document.getElementById('btn-memory-rules')?.addEventListener('click', () => {
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+      });
+
+      // Handle Attachment
+      window.handleReceiptUpload = function(evt) {
+        const file = evt.target.files[0];
+        if (file) {
+          attachmentName.textContent = file.name + ' (OCR Analisis Siap)';
+          attachmentBadge.classList.remove('hidden');
+          attachmentBadge.classList.add('flex');
+        }
+      };
+
+      window.removeAttachment = function() {
+        attachmentBadge.classList.remove('flex');
+        attachmentBadge.classList.add('hidden');
+        document.getElementById('receipt-upload').value = '';
+      };
+
+      // Handle Audio Dictation Toggle
+      window.toggleAudioRecord = function() {
+        isRecording = !isRecording;
+        if (isRecording) {
+          micIcon.textContent = 'graphic_eq';
+          micIcon.classList.add('text-error', 'animate-pulse');
+          promptInput.placeholder = 'Mendengarkan instruksi suara Mas Iman...';
+        } else {
+          micIcon.textContent = 'mic';
+          micIcon.classList.remove('text-error', 'animate-pulse');
+          promptInput.placeholder = 'Ketik instruksi finansial, catat mutasi, atau minta audit kas...';
+          promptInput.value = 'Tolong simulasikan dampak pembayaran bonus tim Rp 15 juta ke cadangan kas akhir bulan.';
+        }
+      };
+
+      // Add rule dialog mock
+      window.addRulePrompt = function() {
+        const rule = prompt('Ketik aturan baru untuk memori finansial AI (contoh: "Vendor hosting Niagahoster alokasikan ke IT Infrastructure"):');
+        if (rule && rule.trim() !== '') {
+          alert('Aturan berhasil di-ingest ke Continuous Memory Engine NexaFinance!');
+        }
+      };
+
+      // Submit prompt function
+      window.submitAgentPrompt = function() {
+        const val = promptInput.value.trim();
+        if (!val) return;
+
+        // Append User Bubble
+        const userHtml = `
+          <div class="flex items-start justify-end gap-space-md">
+            <div class="flex flex-col items-end max-w-lg">
+              <div class="flex items-center gap-space-xs mb-space-2xs">
+                <span class="font-label-caps text-label-caps text-outline">Baru Saja</span>
+                <span class="font-body-sm text-body-sm font-semibold text-on-surface">Iman Azizi</span>
+              </div>
+              <div class="bg-primary text-on-primary p-space-md rounded-xl font-body-md text-body-md shadow-sm leading-relaxed">
+                ${val}
+              </div>
+            </div>
+            <div class="w-9 h-9 rounded-lg bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+              <span class="material-symbols-outlined text-[20px]">person</span>
+            </div>
+          </div>
+        `;
+        chatStream.insertAdjacentHTML('beforeend', userHtml);
+        promptInput.value = '';
+        window.removeAttachment();
+        chatStream.scrollTop = chatStream.scrollHeight;
+
+        // Artificial Agent Thinking & Response
+        setTimeout(() => {
+          const agentHtml = `
+            <div class="flex items-start gap-space-md">
+              <div class="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+              </div>
+              <div class="flex flex-col max-w-xl">
+                <div class="flex items-center gap-space-xs mb-space-2xs">
+                  <span class="font-body-sm text-body-sm font-semibold text-on-surface">Nexa Treasury Agent</span>
+                  <span class="font-label-caps text-label-caps text-tertiary">Latensi 98ms</span>
+                </div>
+                <div class="bg-surface-container-low p-space-md rounded-xl text-on-surface font-body-md text-body-md leading-relaxed shadow-sm">
+                  <p>Perintah <em>"${val}"</em> telah diproses dengan model Groq Llama 3.3. Arus kas Nexa Digital Agency diproyeksikan tetap aman dengan sisa runway <strong>6.2 bulan</strong> setelah pencatatan ini.</p>
+                </div>
+              </div>
+            </div>
+          `;
+          chatStream.insertAdjacentHTML('beforeend', agentHtml);
+          chatStream.scrollTop = chatStream.scrollHeight;
+        }, 650);
+      };
+    })();
+  </script>
+</div></main></div></body></html>
