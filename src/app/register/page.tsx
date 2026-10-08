@@ -13,8 +13,8 @@ const registerSchema = z
     email: z.string().email("Format email tidak valid"),
     whatsappNumber: z
       .string()
-      .optional()
-      .refine((val) => !val || /^(\+?62|0)[0-9]{8,13}$/.test(val), {
+      .min(8, "Nomor WhatsApp minimal 8 karakter")
+      .refine((val) => /^(\+?62|0)[0-9]{8,13}$/.test(val), {
         message: "Format WhatsApp tidak valid (contoh: 08123456789)",
       }),
     password: z.string().min(8, "Kata sandi minimal 8 karakter"),
@@ -74,7 +74,7 @@ export default function RegisterPage() {
     const result = registerSchema.safeParse({
       name,
       email,
-      whatsappNumber: whatsappNumber || undefined,
+      whatsappNumber,
       password,
       confirmPassword,
     });
@@ -94,20 +94,47 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
+      // 1. Cek apakah email dan nomor sudah pernah digunakan
+      const checkRes = await fetch("/api/auth/check-unique", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), whatsappNumber: whatsappNumber.trim() }),
+      });
+      const checkData = await checkRes.json();
+
+      if (!checkData.available) {
+        if (checkData.emailTaken) {
+          setError(checkData.emailMessage || "Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.");
+          setLoading(false);
+          return;
+        }
+        if (checkData.phoneTaken) {
+          setError(checkData.phoneMessage || "Nomor WhatsApp ini sudah terdaftar di akun lain. Silakan gunakan nomor lain.");
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. Generate OTP & Kirim ke WhatsApp
       const generatedCode = String(Math.floor(100000 + Math.random() * 900000));
       setActiveOtpCode(generatedCode);
       setOtp(["", "", "", "", "", ""]);
       setCountdown(45);
       setCanResend(false);
 
-      await new Promise((r) => setTimeout(r, 500));
+      await fetch("/api/whatsapp/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: whatsappNumber.trim(), code: generatedCode, name: name.trim(), purpose: "register" }),
+      });
+
       setStep("otp");
 
       setTimeout(() => {
         otpInputRefs.current[0]?.focus();
       }, 200);
     } catch {
-      setError("Gagal mengirim kode verifikasi OTP.");
+      setError("Gagal memvalidasi data pendaftaran atau mengirim OTP.");
     } finally {
       setLoading(false);
     }
@@ -215,8 +242,8 @@ export default function RegisterPage() {
           </h1>
           <p className="text-xs sm:text-sm text-[#6d7a72] mt-1">
             {step === "form"
-              ? "Daftar akun & aktivasi dengan verifikasi OTP email"
-              : "Verifikasi kepemilikan email untuk aktivasi workspace"}
+              ? "Daftar akun & aktivasi dengan verifikasi kode OTP WhatsApp"
+              : "Verifikasi kepemilikan nomor WhatsApp untuk aktivasi workspace"}
           </p>
         </div>
 
@@ -235,7 +262,7 @@ export default function RegisterPage() {
           <form onSubmit={handleFormSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1">
-                Nama Lengkap / Bisnis
+                Nama Lengkap / Bisnis *
               </label>
               <input
                 type="text"
@@ -253,8 +280,30 @@ export default function RegisterPage() {
             </div>
 
             <div>
+              <label className="flex justify-between items-center text-xs font-bold text-[#334155] uppercase tracking-wider mb-1">
+                <span>Nomor WhatsApp (Tujuan Pengiriman OTP) *</span>
+                <span className="text-[11px] text-[#006948] font-bold">
+                  OTP Dikirim ke Sini
+                </span>
+              </label>
+              <input
+                type="tel"
+                placeholder="081234567890"
+                value={whatsappNumber}
+                onChange={(e) => setWhatsappNumber(e.target.value)}
+                className={`w-full px-3.5 py-2.5 rounded-lg border bg-[#f8fafc] text-sm focus:outline-none focus:ring-2 focus:ring-[#006948] focus:bg-white transition-all ${
+                  fieldErrors.whatsappNumber ? "border-red-400" : "border-[#cbd5e1]"
+                }`}
+                required
+              />
+              {fieldErrors.whatsappNumber && (
+                <p className="text-xs text-red-600 mt-1">{fieldErrors.whatsappNumber}</p>
+              )}
+            </div>
+
+            <div>
               <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1">
-                Alamat Email (Untuk Pengiriman OTP)
+                Alamat Email Bisnis (Login & Notifikasi) *
               </label>
               <input
                 type="email"
@@ -269,22 +318,6 @@ export default function RegisterPage() {
               {fieldErrors.email && (
                 <p className="text-xs text-red-600 mt-1">{fieldErrors.email}</p>
               )}
-            </div>
-
-            <div>
-              <label className="flex justify-between items-center text-xs font-bold text-[#334155] uppercase tracking-wider mb-1">
-                <span>Nomor WhatsApp (Aktif)</span>
-                <span className="text-[11px] text-[#6d7a72] font-normal normal-case">
-                  Sinkronisasi Notifikasi OTP
-                </span>
-              </label>
-              <input
-                type="tel"
-                placeholder="081234567890"
-                value={whatsappNumber}
-                onChange={(e) => setWhatsappNumber(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-[#cbd5e1] bg-[#f8fafc] text-sm focus:outline-none focus:ring-2 focus:ring-[#006948] focus:bg-white transition-all"
-              />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -324,9 +357,9 @@ export default function RegisterPage() {
             {/* Info Box */}
             <div className="p-3 bg-[#006948]/5 border border-[#006948]/20 rounded-lg text-xs text-[#3d4a42] space-y-1">
               <div className="flex items-center gap-1.5 font-bold text-[#006948]">
-                <CheckCircle2 size={14} /> Verifikasi Keamanan Email:
+                <CheckCircle2 size={14} /> Pengecekan Keunikan Data:
               </div>
-              <div>Kode OTP 6-digit akan dikirimkan ke email yang Anda daftarkan di atas sebelum akun diaktifkan.</div>
+              <div>Email dan nomor WhatsApp akan dicek keunikannya. Kode OTP 6-digit akan dikirimkan ke nomor WhatsApp Anda.</div>
             </div>
 
             <button
@@ -334,14 +367,14 @@ export default function RegisterPage() {
               className="w-full py-3 rounded-lg bg-[#006948] hover:bg-[#00855d] text-white font-semibold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               disabled={loading}
             >
-              <span>{loading ? "Menyiapkan OTP..." : "Lanjutkan & Kirim OTP ke Email"}</span>
+              <span>{loading ? "Memeriksa Keunikan Data..." : "Daftar & Kirim Kode OTP ke WhatsApp"}</span>
               <ArrowRight size={16} />
             </button>
           </form>
         )}
 
         {/* ======================================================== */}
-        {/* STEP 2: VERIFIKASI EMAIL DENGAN OTP                      */}
+        {/* STEP 2: VERIFIKASI WHATSAPP DENGAN OTP                   */}
         {/* ======================================================== */}
         {step === "otp" && (
           <div className="space-y-5">
@@ -354,8 +387,11 @@ export default function RegisterPage() {
                 <ArrowLeft size={13} /> Ubah data pendaftaran
               </button>
               <div className="text-sm text-[#3d4a42]">
-                Kode OTP telah dikirim ke: <br />
-                <strong className="text-[#171b26] font-semibold">{email}</strong>
+                Kode OTP telah dikirimkan ke nomor WhatsApp: <br />
+                <strong className="text-[#171b26] font-semibold">{whatsappNumber}</strong>
+              </div>
+              <div className="text-xs text-[#6d7a72] mt-0.5">
+                Email terdaftar: {email}
               </div>
             </div>
 
@@ -380,9 +416,9 @@ export default function RegisterPage() {
             </div>
 
             {/* Demo Helper Banner */}
-            <div className="p-2.5 rounded-lg bg-[#006948]/5 border border-[#006948]/20 flex items-center justify-between text-xs">
-              <span className="text-[#006948] font-medium">
-                Kode OTP Email: <strong>{activeOtpCode}</strong>
+            <div className="p-2.5 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-between text-xs">
+              <span className="text-[#00873c] font-medium">
+                Kode OTP WhatsApp: <strong>{activeOtpCode}</strong>
               </span>
               <button
                 type="button"
@@ -399,7 +435,7 @@ export default function RegisterPage() {
               disabled={loading || otp.join("").length < 6}
               className="w-full py-3 rounded-lg bg-[#006948] hover:bg-[#00855d] text-white font-semibold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              <span>{loading ? "Membuat Akun..." : "Verifikasi & Aktifkan Akun"}</span>
+              <span>{loading ? "Membuat Akun..." : "Verifikasi OTP & Aktifkan Akun"}</span>
               <CheckCircle2 size={16} />
             </button>
 
@@ -412,7 +448,7 @@ export default function RegisterPage() {
                   onClick={() => handleFormSubmit({ preventDefault: () => {} } as any)}
                   className="text-[#006948] font-bold hover:underline inline-flex items-center gap-1"
                 >
-                  <RefreshCw size={12} /> Kirim Ulang Kode Sekarang
+                  <RefreshCw size={12} /> Kirim Ulang Kode OTP ke WhatsApp
                 </button>
               )}
             </div>
