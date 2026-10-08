@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/serialize";
+import { initializeUserDefaultWorkspace } from "@/lib/workspace-init";
 import { WorkspaceRole, WorkspaceType, AccountType, CategoryType } from "@prisma/client";
 import { z } from "zod";
 
@@ -27,7 +28,7 @@ export async function GET() {
   try {
     const user = await requireUser();
 
-    const memberships = await prisma.workspaceMember.findMany({
+    let memberships = await prisma.workspaceMember.findMany({
       where: { userId: user.id },
       include: {
         workspace: {
@@ -53,6 +54,36 @@ export async function GET() {
       },
       orderBy: { createdAt: "asc" },
     });
+
+    if (memberships.length === 0) {
+      await initializeUserDefaultWorkspace(user.id);
+      memberships = await prisma.workspaceMember.findMany({
+        where: { userId: user.id },
+        include: {
+          workspace: {
+            include: {
+              accounts: {
+                where: { isArchived: false },
+                select: {
+                  id: true,
+                  name: true,
+                  type: true,
+                  balance: true,
+                  color: true,
+                },
+              },
+              _count: {
+                select: {
+                  members: true,
+                  transactions: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: "asc" },
+      });
+    }
 
     const workspaces = memberships.map((m) => {
       const totalBalance = m.workspace.accounts.reduce(

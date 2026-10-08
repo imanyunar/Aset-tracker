@@ -261,7 +261,7 @@ export default function RegisterPage() {
               </label>
               <input
                 type="text"
-                placeholder="Contoh: Alex Pratama"
+                placeholder="Nama lengkap Anda"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className={`w-full px-3.5 py-2.5 rounded-lg border bg-[#f8fafc] text-sm focus:outline-none focus:ring-2 focus:ring-[#006948] focus:bg-white transition-all ${
