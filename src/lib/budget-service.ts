@@ -150,18 +150,24 @@ export async function dispatchTransactionNotifications({
       transactedAt: tx.transactedAt,
     });
 
-    await sendWhatsAppNotification(recipientWa, message);
+    // Timeout safeguard (max 2500ms)
+    await Promise.race([
+      (async () => {
+        await sendWhatsAppNotification(recipientWa, message);
 
-    // 4. If EXPENSE, check budget alert
-    if (tx.type === TransactionType.EXPENSE && tx.categoryId) {
-      await checkAndSendBudgetAlert({
-        workspaceId,
-        categoryId: tx.categoryId,
-        whatsappNumber: recipientWa,
-        workspaceName: tx.workspace.name,
-      });
-    }
-  } catch (err) {
-    console.error("[Notification] Error dispatching WhatsApp notifications:", err);
+        // 4. If EXPENSE, check budget alert
+        if (tx.type === TransactionType.EXPENSE && tx.categoryId) {
+          await checkAndSendBudgetAlert({
+            workspaceId,
+            categoryId: tx.categoryId,
+            whatsappNumber: recipientWa,
+            workspaceName: tx.workspace.name,
+          });
+        }
+      })(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Notification timeout")), 2500)),
+    ]);
+  } catch (err: any) {
+    console.warn("[Notification] Background dispatch notice:", err?.message || err);
   }
 }
