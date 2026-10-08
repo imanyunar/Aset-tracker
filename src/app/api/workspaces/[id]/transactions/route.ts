@@ -10,27 +10,38 @@ import { z } from "zod";
 const createTransactionSchema = z.preprocess(
   (val: any) => {
     if (typeof val === "object" && val !== null) {
+      const desc =
+        (val.description && String(val.description).trim()) ||
+        (val.title && String(val.title).trim()) ||
+        (val.name && String(val.name).trim()) ||
+        "Transaksi";
+
+      const accId =
+        (val.accountId && String(val.accountId).trim()) ||
+        (val.sourceAccountId && String(val.sourceAccountId).trim()) ||
+        undefined;
+
       return {
         ...val,
         type: val.type || "EXPENSE",
-        accountId: val.accountId || val.sourceAccountId,
+        accountId: accId,
         toAccountId: val.toAccountId !== undefined ? val.toAccountId : val.destinationAccountId,
         transactedAt: val.transactedAt || val.date,
-        description: val.description || val.title || val.name,
+        description: desc,
       };
     }
     return val;
   },
   z.object({
-    type: z.nativeEnum(TransactionType, "Tipe transaksi wajib dipilih"),
-    accountId: z.string("Rekening sumber wajib dipilih").min(1, "Rekening sumber wajib dipilih"),
+    type: z.nativeEnum(TransactionType, "Tipe transaksi wajib dipilih").default(TransactionType.EXPENSE),
+    accountId: z.string().optional(),
     toAccountId: z.string().optional().nullable(),
     categoryId: z.string().optional().nullable(),
     amount: z.number().or(z.string()).transform((val) => {
-      const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
+      const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(Number(val) || 0);
       return BigInt(num);
     }),
-    description: z.string("Keterangan transaksi wajib diisi").min(1, "Keterangan transaksi wajib diisi"),
+    description: z.string().default("Transaksi"),
     notes: z.string().optional().nullable(),
     transactedAt: z.string().optional().transform((val) => (val ? new Date(val) : new Date())),
   })
@@ -198,15 +209,30 @@ export async function POST(req: Request, { params }: RouteParams) {
     const { type, accountId, toAccountId, categoryId, amount, description, notes, transactedAt } =
       parsed.data;
 
+    let effectiveAccountId = accountId;
+    if (!effectiveAccountId) {
+      const defaultAcc = await prisma.financialAccount.findFirst({
+        where: { workspaceId: id, isArchived: false },
+        orderBy: { createdAt: "asc" },
+      });
+      if (!defaultAcc) {
+        return NextResponse.json(
+          { error: "Workspace ini belum memiliki rekening aktif. Tambahkan rekening terlebih dahulu." },
+          { status: 400 }
+        );
+      }
+      effectiveAccountId = defaultAcc.id;
+    }
+
     const transaction = await createTransactionAtomic({
       workspaceId: id,
       userId: user.id,
-      accountId,
+      accountId: effectiveAccountId,
       toAccountId: toAccountId || null,
       categoryId: categoryId || null,
       type,
       amount,
-      description,
+      description: description || "Transaksi",
       notes: notes || null,
       transactedAt,
     });

@@ -213,14 +213,23 @@ function TransactionsContent() {
       return;
     }
 
+    const selectedAccountId = formAccountId || accounts[0]?.id;
+    if (!selectedAccountId) {
+      setModalError("Pilih rekening sumber terlebih dahulu");
+      setSubmitting(false);
+      return;
+    }
+
+    const cleanDescription = (formDescription && formDescription.trim()) || "Transaksi";
+
     try {
       const payload: any = {
         type: formType,
-        accountId: formAccountId,
+        accountId: selectedAccountId,
         amount: cleanAmount,
-        description: formDescription,
+        description: cleanDescription,
         notes: formNotes || null,
-        transactedAt: new Date(formDate).toISOString(),
+        transactedAt: new Date(formDate || new Date()).toISOString(),
       };
 
       if (formType === "TRANSFER") {
