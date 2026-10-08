@@ -16,6 +16,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,6 +35,7 @@ export default function LoginPage() {
       const res = await signIn.email({
         email,
         password,
+        rememberMe,
       });
 
       if (res?.error) {
@@ -42,6 +44,8 @@ export default function LoginPage() {
         if (typeof window !== "undefined") {
           try {
             localStorage.removeItem("nexa_explicit_logged_out");
+            localStorage.setItem("nexa_last_activity", String(Date.now()));
+            sessionStorage.setItem("nexa_session_active", "true");
           } catch {}
         }
         router.push("/dashboard");
@@ -100,6 +104,18 @@ export default function LoginPage() {
               className="form-input"
               required
             />
+          </div>
+
+          <div className="flex items-center justify-between my-3 text-xs text-[var(--color-text-secondary)]">
+            <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="rounded accent-[var(--color-primary)] cursor-pointer"
+              />
+              <span>Ingat saya di perangkat ini</span>
+            </label>
           </div>
 
           <button

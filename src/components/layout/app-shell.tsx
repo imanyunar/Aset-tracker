@@ -46,10 +46,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (typeof window !== "undefined") {
       try {
         localStorage.setItem("nexa_explicit_logged_out", "true");
+        localStorage.removeItem("nexa_last_activity");
         sessionStorage.clear();
       } catch {}
     }
-    await signOut();
+    try {
+      await signOut();
+    } catch {}
     router.push("/login");
   };
 
