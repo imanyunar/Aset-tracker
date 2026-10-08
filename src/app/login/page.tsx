@@ -8,8 +8,8 @@ import { ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
 import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().email("Format email tidak valid"),
-  password: z.string().min(1, "Kata sandi wajib diisi"),
+  email: z.string("Email wajib diisi").email("Format email tidak valid"),
+  password: z.string("Kata sandi wajib diisi").min(1, "Kata sandi wajib diisi"),
 });
 
 export default function LoginPage() {

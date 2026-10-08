@@ -5,15 +5,28 @@ import { serializeBigInt } from "@/lib/serialize";
 import { AccountType, WorkspaceRole } from "@prisma/client";
 import { z } from "zod";
 
-const createAccountSchema = z.object({
-  name: z.string().min(2, "Nama rekening minimal 2 karakter"),
-  type: z.nativeEnum(AccountType).default(AccountType.BANK),
-  openingBalance: z.number().or(z.string()).transform((val) => {
-    const num = typeof val === "string" ? parseInt(val.replace(/[^0-9-]/g, "") || "0", 10) : Math.round(val);
-    return BigInt(num);
-  }),
-  color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Format warna tidak valid").default("#187aba"),
-});
+const createAccountSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        name: val.name || val.accountName || val.title,
+        type: val.type || val.accountType || AccountType.BANK,
+        openingBalance: val.openingBalance !== undefined ? val.openingBalance : (val.balance || 0),
+      };
+    }
+    return val;
+  },
+  z.object({
+    name: z.string("Nama rekening wajib diisi").min(2, "Nama rekening minimal 2 karakter"),
+    type: z.nativeEnum(AccountType).default(AccountType.BANK),
+    openingBalance: z.number().or(z.string()).default(0).transform((val) => {
+      const num = typeof val === "string" ? parseInt(val.replace(/[^0-9-]/g, "") || "0", 10) : Math.round(Number(val) || 0);
+      return BigInt(num);
+    }),
+    color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Format warna tidak valid").default("#187aba"),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;

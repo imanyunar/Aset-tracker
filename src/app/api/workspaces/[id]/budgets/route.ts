@@ -5,14 +5,25 @@ import { serializeBigInt } from "@/lib/serialize";
 import { TransactionType, WorkspaceRole } from "@prisma/client";
 import { z } from "zod";
 
-const upsertBudgetSchema = z.object({
-  categoryId: z.string().min(1, "Kategori wajib dipilih"),
-  amount: z.number().or(z.string()).transform((val) => {
-    const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
-    return BigInt(num);
-  }),
-  period: z.string().regex(/^\d{4}-\d{2}$/, "Format periode harus YYYY-MM").optional(),
-});
+const upsertBudgetSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        categoryId: val.categoryId || val.category_id || val.category,
+      };
+    }
+    return val;
+  },
+  z.object({
+    categoryId: z.string("Kategori anggaran wajib dipilih").min(1, "Kategori anggaran wajib dipilih"),
+    amount: z.number().or(z.string()).transform((val) => {
+      const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
+      return BigInt(num);
+    }),
+    period: z.string().regex(/^\d{4}-\d{2}$/, "Format periode harus YYYY-MM").optional(),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;

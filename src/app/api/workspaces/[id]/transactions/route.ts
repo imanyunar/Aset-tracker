@@ -12,23 +12,25 @@ const createTransactionSchema = z.preprocess(
     if (typeof val === "object" && val !== null) {
       return {
         ...val,
+        type: val.type || "EXPENSE",
         accountId: val.accountId || val.sourceAccountId,
         toAccountId: val.toAccountId !== undefined ? val.toAccountId : val.destinationAccountId,
         transactedAt: val.transactedAt || val.date,
+        description: val.description || val.title || val.name,
       };
     }
     return val;
   },
   z.object({
-    type: z.nativeEnum(TransactionType),
-    accountId: z.string().min(1, "Rekening sumber wajib dipilih"),
+    type: z.nativeEnum(TransactionType, "Tipe transaksi wajib dipilih"),
+    accountId: z.string("Rekening sumber wajib dipilih").min(1, "Rekening sumber wajib dipilih"),
     toAccountId: z.string().optional().nullable(),
     categoryId: z.string().optional().nullable(),
     amount: z.number().or(z.string()).transform((val) => {
       const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
       return BigInt(num);
     }),
-    description: z.string().min(1, "Keterangan transaksi wajib diisi"),
+    description: z.string("Keterangan transaksi wajib diisi").min(1, "Keterangan transaksi wajib diisi"),
     notes: z.string().optional().nullable(),
     transactedAt: z.string().optional().transform((val) => (val ? new Date(val) : new Date())),
   })

@@ -5,13 +5,25 @@ import { parseReceiptVision } from "@/lib/ai/gemini";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { z } from "zod";
 
-const receiptSchema = z.object({
-  imageBase64: z
-    .string()
-    .min(10, "Data gambar struk tidak valid")
-    .max(8 * 1024 * 1024, "Ukuran gambar melebihi batas maksimum 6MB"),
-  mimeType: z.string().default("image/jpeg"),
-});
+const receiptSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        imageBase64: val.imageBase64 || val.image || val.base64 || val.data || val.file,
+        mimeType: val.mimeType || val.type || "image/jpeg",
+      };
+    }
+    return val;
+  },
+  z.object({
+    imageBase64: z
+      .string("Gambar struk wajib disertakan")
+      .min(10, "Data gambar struk tidak valid")
+      .max(8 * 1024 * 1024, "Ukuran gambar melebihi batas maksimum 6MB"),
+    mimeType: z.string().default("image/jpeg"),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -27,11 +39,34 @@ export async function POST(req: Request, { params }: RouteParams) {
 
     await requireWorkspaceAccess(user.id, workspaceId);
 
-    const body = await req.json();
+    let body: any = {};
+    const contentType = req.headers.get("content-type") || "";
+    if (contentType.includes("multipart/form-data")) {
+      try {
+        const formData = await req.formData();
+        const file = formData.get("file") || formData.get("image") || formData.get("receipt");
+        if (file && typeof file === "object" && "arrayBuffer" in file) {
+          const buffer = Buffer.from(await (file as File).arrayBuffer());
+          body.imageBase64 = buffer.toString("base64");
+          body.mimeType = (file as File).type || "image/jpeg";
+        } else if (typeof file === "string") {
+          body.imageBase64 = file;
+        }
+      } catch (formErr) {
+        console.error("FormData parse error:", formErr);
+      }
+    } else {
+      try {
+        body = await req.json();
+      } catch {
+        body = {};
+      }
+    }
+
     const parsed = receiptSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
-        { error: parsed.error.issues[0]?.message ?? "Input gambar tidak valid" },
+        { error: parsed.error.issues[0]?.message ?? "Gambar struk wajib disertakan" },
         { status: 400 }
       );
     }

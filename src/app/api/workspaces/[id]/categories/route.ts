@@ -4,12 +4,24 @@ import { prisma } from "@/lib/prisma";
 import { CategoryType, WorkspaceRole } from "@prisma/client";
 import { z } from "zod";
 
-const createCategorySchema = z.object({
-  name: z.string().min(2, "Nama kategori minimal 2 karakter"),
-  type: z.nativeEnum(CategoryType),
-  icon: z.string().default("tag"),
-  color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Format warna tidak valid").default("#187aba"),
-});
+const createCategorySchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        name: val.name || val.categoryName || val.title,
+        type: val.type || "EXPENSE",
+      };
+    }
+    return val;
+  },
+  z.object({
+    name: z.string("Nama kategori wajib diisi").min(2, "Nama kategori minimal 2 karakter"),
+    type: z.nativeEnum(CategoryType, "Tipe kategori wajib dipilih"),
+    icon: z.string().default("tag"),
+    color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Format warna tidak valid").default("#187aba"),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;

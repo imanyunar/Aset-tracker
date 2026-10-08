@@ -5,11 +5,22 @@ import { serializeBigInt } from "@/lib/serialize";
 import { WorkspaceRole, WorkspaceType, AccountType, CategoryType } from "@prisma/client";
 import { z } from "zod";
 
-const createWorkspaceSchema = z.object({
-  name: z.string().min(2, "Nama workspace minimal 2 karakter"),
-  type: z.nativeEnum(WorkspaceType).default(WorkspaceType.PERSONAL),
-  currency: z.string().default("IDR"),
-});
+const createWorkspaceSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        name: val.name || val.workspaceName || val.title,
+      };
+    }
+    return val;
+  },
+  z.object({
+    name: z.string("Nama workspace wajib diisi").min(2, "Nama workspace minimal 2 karakter"),
+    type: z.nativeEnum(WorkspaceType).default(WorkspaceType.PERSONAL),
+    currency: z.string().default("IDR"),
+  })
+);
 
 // GET /api/workspaces - List all workspaces accessible by the logged-in user
 export async function GET() {

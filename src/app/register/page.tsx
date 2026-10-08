@@ -9,14 +9,14 @@ import { z } from "zod";
 
 const registerSchema = z
   .object({
-    name: z.string().min(2, "Nama minimal 2 karakter"),
-    email: z.string().email("Format email tidak valid"),
+    name: z.string("Nama lengkap wajib diisi").min(2, "Nama minimal 2 karakter"),
+    email: z.string("Email wajib diisi").email("Format email tidak valid"),
     whatsappNumber: z
-      .string()
+      .string("Nomor WhatsApp wajib diisi")
       .min(9, "Nomor WhatsApp minimal 9 digit")
       .regex(/^(\+?62|0)[0-9]{8,13}$/, "Format WhatsApp tidak valid (contoh: 08123456789)"),
-    password: z.string().min(8, "Kata sandi minimal 8 karakter"),
-    confirmPassword: z.string().min(8, "Konfirmasi kata sandi minimal 8 karakter"),
+    password: z.string("Kata sandi wajib diisi").min(8, "Kata sandi minimal 8 karakter"),
+    confirmPassword: z.string("Konfirmasi kata sandi wajib diisi").min(8, "Konfirmasi kata sandi minimal 8 karakter"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Konfirmasi kata sandi tidak cocok",

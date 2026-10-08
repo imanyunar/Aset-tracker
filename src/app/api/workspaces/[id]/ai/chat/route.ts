@@ -13,14 +13,26 @@ import { getLiveMarketContextForQuery } from "@/lib/ai/market-data";
 import { TransactionType } from "@prisma/client";
 import { z } from "zod";
 
-const chatSchema = z.object({
-  messages: z.array(
-    z.object({
-      role: z.enum(["user", "assistant"]),
-      content: z.string().min(1),
-    })
-  ),
-});
+const chatSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      if (!val.messages && (val.message || val.prompt || val.text)) {
+        return {
+          messages: [{ role: "user", content: String(val.message || val.prompt || val.text) }],
+        };
+      }
+    }
+    return val;
+  },
+  z.object({
+    messages: z.array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().min(1, "Pesan tidak boleh kosong"),
+      })
+    ),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;

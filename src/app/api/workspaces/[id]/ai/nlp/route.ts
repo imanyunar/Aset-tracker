@@ -5,9 +5,22 @@ import { parseNaturalLanguageTransaction } from "@/lib/ai/groq";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { z } from "zod";
 
-const nlpSchema = z.object({
-  text: z.string().min(2, "Teks transaksi tidak boleh kosong"),
-});
+const nlpSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        text: val.text || val.prompt || val.message || val.query || val.input,
+      };
+    }
+    return val;
+  },
+  z.object({
+    text: z
+      .string("Teks perintah transaksi wajib diisi")
+      .min(2, "Teks perintah transaksi minimal 2 karakter"),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;

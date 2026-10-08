@@ -5,10 +5,21 @@ import { serializeBigInt } from "@/lib/serialize";
 import { WorkspaceRole } from "@prisma/client";
 import { z } from "zod";
 
-const updateWorkspaceSchema = z.object({
-  name: z.string().min(2, "Nama workspace minimal 2 karakter").optional(),
-  currency: z.string().optional(),
-});
+const updateWorkspaceSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        name: val.name || val.workspaceName,
+      };
+    }
+    return val;
+  },
+  z.object({
+    name: z.string().min(2, "Nama workspace minimal 2 karakter").optional(),
+    currency: z.string().optional(),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;

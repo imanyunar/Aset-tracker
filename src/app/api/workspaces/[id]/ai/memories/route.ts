@@ -8,18 +8,31 @@ import {
 } from "@/lib/ai/learning-engine";
 import { z } from "zod";
 
-const createMemorySchema = z.object({
-  category: z.enum([
-    "USER_PREFERENCE",
-    "FINANCIAL_RULE",
-    "FINANCIAL_GOAL",
-    "USER_HABIT",
-    "PERSONAL_CONTEXT",
-  ]),
-  title: z.string().min(2, "Judul memori minimal 2 karakter"),
-  fact: z.string().min(3, "Deskripsi fakta atau aturan minimal 3 karakter"),
-  actionableRule: z.string().optional(),
-});
+const createMemorySchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        category: val.category || "USER_PREFERENCE",
+        title: val.title || val.name,
+        fact: val.fact || val.description || val.content || val.rule,
+      };
+    }
+    return val;
+  },
+  z.object({
+    category: z.enum([
+      "USER_PREFERENCE",
+      "FINANCIAL_RULE",
+      "FINANCIAL_GOAL",
+      "USER_HABIT",
+      "PERSONAL_CONTEXT",
+    ]),
+    title: z.string("Judul memori wajib diisi").min(2, "Judul memori minimal 2 karakter"),
+    fact: z.string("Fakta memori wajib diisi").min(3, "Deskripsi fakta atau aturan minimal 3 karakter"),
+    actionableRule: z.string().optional(),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;

@@ -18,6 +18,7 @@ const updateTransactionSchema = z.preprocess(
         accountId: val.accountId || val.sourceAccountId,
         toAccountId: val.toAccountId !== undefined ? val.toAccountId : val.destinationAccountId,
         transactedAt: val.transactedAt || val.date,
+        description: val.description || val.title || val.name,
       };
     }
     return val;
