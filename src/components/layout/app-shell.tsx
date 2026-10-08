@@ -43,6 +43,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [createWsError, setCreateWsError] = useState<string | null>(null);
 
   const handleLogout = async () => {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("nexa_explicit_logged_out", "true");
+        sessionStorage.clear();
+      } catch {}
+    }
     await signOut();
     router.push("/login");
   };

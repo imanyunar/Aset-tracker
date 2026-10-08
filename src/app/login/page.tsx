@@ -39,6 +39,11 @@ export default function LoginPage() {
       if (res?.error) {
         setError(res.error.message || "Email atau kata sandi tidak cocok.");
       } else {
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.removeItem("nexa_explicit_logged_out");
+          } catch {}
+        }
         router.push("/dashboard");
         router.refresh();
       }
