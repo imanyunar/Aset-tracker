@@ -4,9 +4,10 @@ import { sendWhatsAppNotification } from "@/lib/whatsapp";
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const { phone, code, name, purpose } = body;
+    const targetPhone = body.phone || body.whatsappNumber;
+    const { code, name, purpose } = body;
 
-    if (!phone || typeof phone !== "string") {
+    if (!targetPhone || typeof targetPhone !== "string") {
       return NextResponse.json(
         { error: "Nomor WhatsApp wajib disertakan" },
         { status: 400 }
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
     }
 
     // Format target phone number
-    const rawDigits = phone.replace(/\D/g, "");
+    const rawDigits = targetPhone.replace(/\D/g, "");
     const cleanPhone = rawDigits.startsWith("0")
       ? "62" + rawDigits.slice(1)
       : rawDigits.startsWith("62")
