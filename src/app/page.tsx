@@ -165,7 +165,7 @@ export default function HomePage() {
                     </div>
                     <div className="ml-2 pl-3 border-l border-[#dfe2f1] flex items-center gap-2">
                       <Building2 size={17} className="text-[#006948]" />
-                      <span className="font-bold text-sm text-[#171b26]">Nexa Digital Agency</span>
+                      <span className="font-bold text-sm text-[#171b26]">Workspace Operasional</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -700,8 +700,7 @@ export default function HomePage() {
                 <span className="font-bold text-base text-[#171b26]">NexaFinance</span>
               </div>
               <p className="text-[#6d7a72] text-xs leading-relaxed max-w-sm">
-                Produk platform treasury cerdas yang dikembangkan oleh Nexa Digital Agency.
-                Solusi keuangan dan pembukuan instan berbasis AI dan WhatsApp untuk UMKM serta startup modern.
+                Platform treasury cerdas SME &amp; Enterprise. Solusi keuangan dan pembukuan instan berbasis AI dan WhatsApp untuk UMKM serta startup modern.
               </p>
               <div className="pt-2">
                 <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#dfe2f1] text-[#171b26] text-[10px] font-bold tracking-wider uppercase">
@@ -736,7 +735,7 @@ export default function HomePage() {
           </div>
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#6d7a72]">
-            <span>© 2025 Nexa Digital Agency. Dikembangkan oleh Nexa Digital Agency. Hak cipta dilindungi undang-undang.</span>
+            <span>© 2026 NexaFinance. Seluruh hak cipta dilindungi undang-undang.</span>
             <div className="flex items-center gap-6">
               <a href="#" className="hover:text-[#006948] transition-colors">Status Sistem</a>
               <a href="#" className="hover:text-[#006948] transition-colors">Dokumentasi API</a>

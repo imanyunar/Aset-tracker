@@ -255,7 +255,7 @@ export async function chatWithFinancialAssistant({
         day: "numeric",
       });
 
-      const systemInstruction = `Anda adalah Nexa AI Agent, asisten finansial cerdas dan autonomous financial agent untuk workspace "${workspaceContext.workspaceName}" milik Mas Iman Azizi.
+      const systemInstruction = `Anda adalah Nexa AI Agent, asisten finansial cerdas dan autonomous financial agent untuk workspace "${workspaceContext.workspaceName}".
 Karakter: Sigap, cerdas, santun, objektif, berorientasi angka, dan siap membantu pencatatan transaksi otomatis, audit kas, dan analisis keuangan real-time.
 
 WAKTU & DATA REAL-TIME SAAT INI:
@@ -371,7 +371,7 @@ Jawab pertanyaan pengguna dalam Bahasa Indonesia dengan format yang rapi, ringka
   }
 
   return {
-    reply: `Halo Mas Iman Azizi! Saya Nexa AI Agent, asisten dan autonomous financial agent Anda di **${workspaceContext.workspaceName}**.\n\nRingkasan keuangan Anda saat ini:\n- **Total Likuiditas**: ${formatRupiah(workspaceContext.totalBalance)}\n- **Pemasukan Bulan Ini**: ${formatRupiah(workspaceContext.monthlyIncome)}\n- **Pengeluaran Bulan Ini**: ${formatRupiah(workspaceContext.monthlyExpense)}\n- **Arus Kas Bersih**: ${formatRupiah(workspaceContext.monthlyIncome - workspaceContext.monthlyExpense)}\n\nSaya dapat mencatat transaksi otomatis untuk Anda (misal: "Catat makan siang 35rb pakai BCA"), memeriksa saldo seluruh rekening, memeriksa kurs valuta asing real-time, atau menganalisis arus kas. Silakan beri perintah!`,
+    reply: `Halo! Saya Nexa AI Agent, asisten dan autonomous financial agent Anda di **${workspaceContext.workspaceName}**.\n\nRingkasan keuangan Anda saat ini:\n- **Total Likuiditas**: ${formatRupiah(workspaceContext.totalBalance)}\n- **Pemasukan Bulan Ini**: ${formatRupiah(workspaceContext.monthlyIncome)}\n- **Pengeluaran Bulan Ini**: ${formatRupiah(workspaceContext.monthlyExpense)}\n- **Arus Kas Bersih**: ${formatRupiah(workspaceContext.monthlyIncome - workspaceContext.monthlyExpense)}\n\nSaya dapat mencatat transaksi otomatis untuk Anda (misal: "Catat belanja operasional 150rb pakai Kas"), memeriksa saldo seluruh rekening, memeriksa kurs valuta asing real-time, atau menganalisis arus kas. Silakan beri perintah!`,
     sources: [],
     isGrounded: false,
     toolExecutedName: "Nexa Core Engine",

@@ -408,7 +408,7 @@ ${preferences.map((p) => `   - ${p.title}: ${p.fact}`).join("\n") || "   (Belum 
 ${habits.map((h) => `   - ${h.title}: ${h.fact}`).join("\n") || "   (Belum ada jadwal rutin tercatat)"}
 
 5. FAKTA PRIBADI & PROFIL:
-${contextFacts.map((c) => `   - ${c.title}: ${c.fact}`).join("\n") || "   (Profil standar Keuangan Iman Azizi)"}
+${contextFacts.map((c) => `   - ${c.title}: ${c.fact}`).join("\n") || "   (Profil umum pengguna)"}
 
 PETUNJUK PENGOLAHAN INFORMASI OLEH AI:
 - Hubungkan setiap pertanyaan pengguna dengan memori dan target yang telah Anda pelajari di atas.

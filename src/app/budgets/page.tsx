@@ -223,9 +223,11 @@ function BudgetsContent() {
 
   const handleSendSimulator = async (presetText?: string) => {
     const textToSend = presetText || simInput;
-    if (!textToSend.trim() || simLoading) return;
-
-    const phone = testPhone || (session?.user as any)?.whatsappNumber || "6281234567890";
+    const phone = testPhone || (session?.user as any)?.whatsappNumber;
+    if (!phone) {
+      alert("Harap masukkan nomor WhatsApp Anda atau isi profil nomor WhatsApp terlebih dahulu.");
+      return;
+    }
     const now = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
 
     setSimMessages((prev) => [...prev, { sender: "user", text: textToSend, time: now }]);
@@ -833,14 +835,14 @@ function BudgetsContent() {
                     <label className="form-label">Nomor WhatsApp Tujuan</label>
                     <input
                       type="tel"
-                      placeholder="081234567890"
+                      placeholder="0812xxxxxxxx"
                       value={testPhone}
                       onChange={(e) => setTestPhone(e.target.value)}
                       className="form-input text-xs"
                       required
                     />
                     <p className="text-[10px] text-[var(--color-text-secondary)] mt-1">
-                      Format Indonesia (contoh: 081234567890 atau 6281234567890)
+                      Format Indonesia (contoh: 0812xxxxxxxx atau 62812xxxxxxxx)
                     </p>
                   </div>
 

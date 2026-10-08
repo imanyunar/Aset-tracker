@@ -15,7 +15,7 @@ const registerSchema = z
       .string()
       .min(8, "Nomor WhatsApp minimal 8 karakter")
       .refine((val) => /^(\+?62|0)[0-9]{8,13}$/.test(val), {
-        message: "Format WhatsApp tidak valid (contoh: 08123456789)",
+        message: "Format nomor WhatsApp tidak valid (contoh: 0812xxxxxxxx)",
       }),
     password: z.string().min(8, "Kata sandi minimal 8 karakter"),
     confirmPassword: z.string().min(8, "Konfirmasi kata sandi minimal 8 karakter"),
@@ -42,7 +42,7 @@ export default function RegisterPage() {
 
   // OTP State
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
-  const [activeOtpCode, setActiveOtpCode] = useState<string>("749215");
+  const [activeOtpCode, setActiveOtpCode] = useState<string>("");
   const [countdown, setCountdown] = useState<number>(45);
   const [canResend, setCanResend] = useState<boolean>(false);
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -191,7 +191,7 @@ export default function RegisterPage() {
       return;
     }
 
-    if (entered !== activeOtpCode && entered !== "749215" && entered !== "123456") {
+    if (entered !== activeOtpCode) {
       setError("Kode OTP tidak valid atau salah. Silakan periksa kembali.");
       return;
     }
@@ -283,7 +283,7 @@ export default function RegisterPage() {
               </label>
               <input
                 type="tel"
-                placeholder="081234567890"
+                placeholder="0812xxxxxxxx"
                 value={whatsappNumber}
                 onChange={(e) => setWhatsappNumber(e.target.value)}
                 className={`w-full px-3.5 py-2.5 rounded-lg border bg-[#f8fafc] text-sm focus:outline-none focus:ring-2 focus:ring-[#006948] focus:bg-white transition-all ${
