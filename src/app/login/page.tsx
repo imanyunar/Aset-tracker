@@ -234,13 +234,13 @@ export default function LoginPage() {
           {/* Header */}
           <div className="mb-6 sm:mb-7">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ebedfc] text-[#006948] text-[11px] font-bold uppercase tracking-wider mb-2">
-              Passwordless Auth
+              Autentikasi Akun
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#171b26] font-heading tracking-tight mb-1 sm:mb-1.5">
-              Masuk dengan Kode OTP
+              Masuk ke Akun Anda
             </h1>
             <p className="text-xs sm:text-sm text-[#64748b]">
-              Verifikasi instan via Email dan notifikasi WhatsApp tanpa perlu mengingat kata sandi.
+              Masukkan alamat email bisnis dan kata sandi Anda untuk mengakses dashboard keuangan.
             </p>
           </div>
 
@@ -258,7 +258,7 @@ export default function LoginPage() {
               </label>
               <input
                 type="email"
-                placeholder="nama@email.com"
+                placeholder="nama@perusahaan.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="form-input text-base sm:text-sm"
@@ -266,34 +266,23 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* WhatsApp Notification Option */}
-            <div className="p-3 rounded-xl bg-[#ebedfc]/60 border border-[#dfe2f1] flex items-center gap-3 text-xs">
-              <div className="w-8 h-8 rounded-lg bg-[#25d366] text-white flex items-center justify-center shrink-0">
-                💬
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-[#171b26]">Sinkronkan Notifikasi ke WhatsApp</div>
-                <div className="text-[#64748b] text-[11px]">Kode OTP juga dikirim via Bot WhatsApp ke nomor terdaftar.</div>
-              </div>
-            </div>
-
             <div className="form-group relative">
               <div className="flex items-center justify-between">
                 <label className="form-label text-xs font-bold text-[#334155] uppercase tracking-wider">
-                  Kode Verifikasi / Sandi
+                  Kata Sandi
                 </label>
                 <button
                   type="button"
-                  onClick={() => handleFillDemo("iman@gmail.com")}
+                  onClick={() => alert("Silakan hubungi administrator workspace untuk reset kata sandi.")}
                   className="text-[11px] text-[#006948] font-bold hover:underline"
                 >
-                  Isi Otomatis OTP (882194)
+                  Lupa Kata Sandi?
                 </button>
               </div>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Kode 6-digit atau sandi akun"
+                  placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="form-input text-base sm:text-sm pr-11"
@@ -318,12 +307,8 @@ export default function LoginPage() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="rounded accent-[#006948] cursor-pointer w-4 h-4"
                 />
-                <span>Ingat saya</span>
+                <span>Ingat saya di perangkat ini</span>
               </label>
-
-              <span className="text-[11.5px] text-[#006948] font-semibold">
-                OTP Aktif: 882194
-              </span>
             </div>
 
             <button
@@ -331,7 +316,7 @@ export default function LoginPage() {
               className="w-full py-3.5 px-6 rounded-lg bg-[#006948] hover:bg-[#00855d] text-white shadow-[0_4px_16px_rgba(0,105,72,0.25)] hover:shadow-[0_8px_24px_rgba(0,105,72,0.35)] text-sm font-bold mt-2 min-h-[48px] flex items-center justify-center gap-2 transition-all"
               disabled={loading}
             >
-              <span>{loading ? "Memverifikasi..." : "Verifikasi & Masuk ke NexaFinance"}</span>
+              <span>{loading ? "Memverifikasi..." : "Masuk ke NexaFinance"}</span>
               {!loading && <ArrowRight size={16} />}
             </button>
           </form>
@@ -339,13 +324,22 @@ export default function LoginPage() {
           {/* Quick Demo Helper */}
           <div className="mt-5 p-3 rounded-xl bg-[#ebedfc] border border-dashed border-[#dfe2f1] flex items-center justify-between text-xs flex-wrap gap-2">
             <span className="text-[#171b26] font-medium">Demo 1-Klik:</span>
-            <button
-              type="button"
-              onClick={() => handleFillDemo("iman@gmail.com")}
-              className="bg-white border border-[#006948] text-[#006948] font-bold hover:bg-[#006948] hover:text-white px-3 py-1 rounded-full transition-colors"
-            >
-              Login Otomatis Iman
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleFillDemo("demo@nexafinance.com")}
+                className="bg-white border border-[#006948] text-[#006948] font-bold hover:bg-[#006948] hover:text-white px-3 py-1 rounded-full transition-colors"
+              >
+                Alex (demo)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFillDemo("iman@gmail.com")}
+                className="bg-white border border-[#006948] text-[#006948] font-bold hover:bg-[#006948] hover:text-white px-3 py-1 rounded-full transition-colors"
+              >
+                Iman
+              </button>
+            </div>
           </div>
 
           <div className="text-center mt-5 text-xs sm:text-sm text-[#64748b]">
