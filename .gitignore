@@ -44,4 +44,6 @@ next-env.d.ts
 # standalone frontend repo
 /frontend
 
-.env*
+# remotion video
+video/node_modules/
+video/out/

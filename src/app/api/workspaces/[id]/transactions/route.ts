@@ -7,19 +7,32 @@ import { dispatchTransactionNotifications } from "@/lib/budget-service";
 import { TransactionType, WorkspaceRole, Prisma } from "@prisma/client";
 import { z } from "zod";
 
-const createTransactionSchema = z.object({
-  type: z.nativeEnum(TransactionType),
-  accountId: z.string().min(1, "Rekening sumber wajib dipilih"),
-  toAccountId: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
-  amount: z.number().or(z.string()).transform((val) => {
-    const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
-    return BigInt(num);
-  }),
-  description: z.string().min(1, "Keterangan transaksi wajib diisi"),
-  notes: z.string().optional().nullable(),
-  transactedAt: z.string().optional().transform((val) => (val ? new Date(val) : new Date())),
-});
+const createTransactionSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        accountId: val.accountId || val.sourceAccountId,
+        toAccountId: val.toAccountId !== undefined ? val.toAccountId : val.destinationAccountId,
+        transactedAt: val.transactedAt || val.date,
+      };
+    }
+    return val;
+  },
+  z.object({
+    type: z.nativeEnum(TransactionType),
+    accountId: z.string().min(1, "Rekening sumber wajib dipilih"),
+    toAccountId: z.string().optional().nullable(),
+    categoryId: z.string().optional().nullable(),
+    amount: z.number().or(z.string()).transform((val) => {
+      const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
+      return BigInt(num);
+    }),
+    description: z.string().min(1, "Keterangan transaksi wajib diisi"),
+    notes: z.string().optional().nullable(),
+    transactedAt: z.string().optional().transform((val) => (val ? new Date(val) : new Date())),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string }>;

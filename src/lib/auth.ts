@@ -21,6 +21,10 @@ export const auth = betterAuth({
     "https://frontend-nine-ruby-17.vercel.app",
     "https://*.vercel.app",
   ],
+  session: {
+    expiresIn: 60 * 60 * 2, // 2 jam batas maksimum sesi di server
+    updateAge: 60 * 15,
+  },
   advanced: {
     defaultCookieAttributes: {
       sameSite: "none",

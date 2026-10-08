@@ -10,26 +10,39 @@ import {
 import { TransactionType, WorkspaceRole } from "@prisma/client";
 import { z } from "zod";
 
-const updateTransactionSchema = z.object({
-  type: z.nativeEnum(TransactionType).optional(),
-  accountId: z.string().optional(),
-  toAccountId: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
-  amount: z
-    .number()
-    .or(z.string())
-    .transform((val) => {
-      const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
-      return BigInt(num);
-    })
-    .optional(),
-  description: z.string().min(1).optional(),
-  notes: z.string().optional().nullable(),
-  transactedAt: z
-    .string()
-    .transform((val) => new Date(val))
-    .optional(),
-});
+const updateTransactionSchema = z.preprocess(
+  (val: any) => {
+    if (typeof val === "object" && val !== null) {
+      return {
+        ...val,
+        accountId: val.accountId || val.sourceAccountId,
+        toAccountId: val.toAccountId !== undefined ? val.toAccountId : val.destinationAccountId,
+        transactedAt: val.transactedAt || val.date,
+      };
+    }
+    return val;
+  },
+  z.object({
+    type: z.nativeEnum(TransactionType).optional(),
+    accountId: z.string().optional(),
+    toAccountId: z.string().optional().nullable(),
+    categoryId: z.string().optional().nullable(),
+    amount: z
+      .number()
+      .or(z.string())
+      .transform((val) => {
+        const num = typeof val === "string" ? parseInt(val.replace(/[^0-9]/g, "") || "0", 10) : Math.round(val);
+        return BigInt(num);
+      })
+      .optional(),
+    description: z.string().min(1).optional(),
+    notes: z.string().optional().nullable(),
+    transactedAt: z
+      .string()
+      .transform((val) => new Date(val))
+      .optional(),
+  })
+);
 
 interface RouteParams {
   params: Promise<{ id: string; transactionId: string }>;

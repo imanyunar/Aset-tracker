@@ -1,0 +1,20 @@
+{
+  "name": "nexafinance-promo-video",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render NexaPromoVertical out/nexa-promo.mp4",
+    "render:landscape": "remotion render NexaPromoLandscape out/nexa-promo-landscape.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.200",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.200"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}

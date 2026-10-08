@@ -167,7 +167,14 @@ export async function processInboundWhatsAppMessage(
     }
 
     const totalBalance = accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
-    const nowTime = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+    const nowTime = new Date()
+      .toLocaleTimeString("id-ID", {
+        timeZone: "Asia/Jakarta",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
+      .replace(/\./g, ":");
 
     const accountLines = accounts.map(
       (a) => `• *${a.name}* (${a.type}): *${formatRupiah(a.balance)}*`
@@ -227,7 +234,11 @@ export async function processInboundWhatsAppMessage(
     });
 
     const netCashflow = income - expense;
-    const monthName = now.toLocaleString("id-ID", { month: "long", year: "numeric" });
+    const monthName = now.toLocaleString("id-ID", {
+      timeZone: "Asia/Jakarta",
+      month: "long",
+      year: "numeric",
+    });
 
     return {
       reply: [
@@ -420,6 +431,20 @@ export async function processInboundWhatsAppMessage(
       `📂 Keterangan: *${parsed.description}*`,
       `💳 Rekening: *${parsed.accountName || updatedAccount?.name || "Rekening"}*`,
     ];
+
+    const formattedTxTime = new Date(transaction.transactedAt)
+      .toLocaleString("id-ID", {
+        timeZone: "Asia/Jakarta",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
+      .replace(/\./g, ":");
+
+    replyLines.push(`🕒 Waktu: *${formattedTxTime} WIB*`);
 
     if (parsed.type === "TRANSFER" && parsed.toAccountName) {
       replyLines.push(`🏦 Rekening Tujuan: *${parsed.toAccountName}*`);

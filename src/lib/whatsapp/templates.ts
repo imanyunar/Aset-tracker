@@ -29,13 +29,18 @@ export function formatTransactionNotification({
     TRANSFER: "🔵 *TRANSFER DANA*",
   };
 
-  const formattedDate = (transactedAt || new Date()).toLocaleString("id-ID", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const dateObj = transactedAt ? new Date(transactedAt) : new Date();
+  const formattedDate = dateObj
+    .toLocaleString("id-ID", {
+      timeZone: "Asia/Jakarta",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+    .replace(/\./g, ":");
 
   let lines: string[] = [
     `🔔 *NEXAFINANCE NOTIFIKASI*`,
@@ -60,7 +65,7 @@ export function formatTransactionNotification({
     lines.push(`📌 Catatan: _${notes}_`);
   }
 
-  lines.push(`🕒 Waktu: ${formattedDate}`);
+  lines.push(`🕒 Waktu: ${formattedDate} WIB`);
 
   if (accountBalance !== undefined) {
     lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);

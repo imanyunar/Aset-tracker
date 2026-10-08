@@ -13,6 +13,9 @@
     "test": "vitest run",
     "dev:vue": "npm run dev --prefix frontend",
     "build:vue": "npm run build --prefix frontend",
+    "video:dev": "npm run dev --prefix video",
+    "video:render": "npm run render --prefix video",
+    "video:render:landscape": "npm run render:landscape --prefix video",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed"
   },
