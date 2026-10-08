@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 // 1. Whitelist Allowed Origins
 const ALLOWED_ORIGINS = [
-  "https://nexafinance-client.vercel.app",
+  "https://nexafinance-app.vercel.app",
   "https://frontend-nine-ruby-17.vercel.app",
   "https://nexafinance-alpha.vercel.app",
   "http://localhost:5173",

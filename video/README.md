@@ -39,7 +39,7 @@ Video promosi dinamis untuk aplikasi **NexaFinance**, dibuat secara terprogram m
 
 6. **Scene 6: Call To Action & Grand Finale (26s – 30s / Frame 780–900)**
    - *Pesan*: Mulai kelola keuangan secara otonom hari ini.
-   - *Visual*: Tombol CTA bersinar *"Coba Sekarang Gratis"*, domain `nexafinance-client.vercel.app`, dan trust badges.
+   - *Visual*: Tombol CTA bersinar *"Coba Sekarang Gratis"*, domain `nexafinance-app.vercel.app`, dan trust badges.
 
 ---
 

@@ -17,7 +17,7 @@ export const auth = betterAuth({
     "http://localhost:5173",
     "http://localhost:3000",
     "https://nexafinance-alpha.vercel.app",
-    "https://nexafinance-client.vercel.app",
+    "https://nexafinance-app.vercel.app",
     "https://frontend-nine-ruby-17.vercel.app",
     "https://*.vercel.app",
   ],

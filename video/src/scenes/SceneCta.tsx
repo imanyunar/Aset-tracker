@@ -124,7 +124,7 @@ export const SceneCta: React.FC = () => {
             fontWeight: 600,
           }}
         >
-          🌐 nexafinance-client.vercel.app
+          🌐 nexafinance-app.vercel.app
         </div>
 
         {/* Trust Badges */}
